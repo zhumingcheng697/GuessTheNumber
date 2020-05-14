@@ -8,10 +8,16 @@
 
 import WatchKit
 
+var setUpperRange = 99
+
 class ExtensionDelegate: NSObject, WKExtensionDelegate {
 
     func applicationDidFinishLaunching() {
         // Perform any final initialization of your application.
+        let restoredUpperRange = UserDefaults.standard.integer(forKey: "userSetUpperRange")
+        if restoredUpperRange != 0 {
+            setUpperRange = restoredUpperRange
+        }
     }
 
     func applicationDidBecomeActive() {
