@@ -9,6 +9,7 @@
 import WatchKit
 
 var setUpperRange = 99
+var prefersUsingHex = false
 
 class ExtensionDelegate: NSObject, WKExtensionDelegate {
 
@@ -18,6 +19,8 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
         if restoredUpperRange != 0 {
             setUpperRange = restoredUpperRange
         }
+        
+        prefersUsingHex = UserDefaults.standard.bool(forKey: "userPrefersUsingHex")
     }
 
     func applicationDidBecomeActive() {

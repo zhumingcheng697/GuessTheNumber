@@ -180,6 +180,7 @@ struct RandomNumberView: View {
 }
 
 struct RandomColorView: View {
+    @State var usingHex = prefersUsingHex
     @State var randomR = Int.random(in: 0 ..< 256)
     @State var randomG = Int.random(in: 0 ..< 256)
     @State var randomB = Int.random(in: 0 ..< 256)
@@ -192,15 +193,21 @@ struct RandomColorView: View {
     
     var body: some View {
         VStack {
-            ZStack {
-                Rectangle()
-                    .foregroundColor(Color(red: Double(self.randomR) / 255.0, green: Double(self.randomG) / 255.0, blue: Double(self.randomB) / 255.0))
-                    .cornerRadius(10)
-                    .animation(.default)
-                
-                Text("(\(self.randomR), \(self.randomG), \(self.randomB))")
-                    .foregroundColor(isColorTooBright() ? .black : .white)
-            }
+            Button(action: {
+                self.usingHex.toggle()
+                prefersUsingHex.toggle()
+                UserDefaults.standard.set(self.usingHex, forKey: "userPrefersUsingHex")
+            }, label: {
+                ZStack {
+                    Rectangle()
+                        .foregroundColor(Color(red: Double(self.randomR) / 255.0, green: Double(self.randomG) / 255.0, blue: Double(self.randomB) / 255.0))
+                        .cornerRadius(8)
+                        .animation(.default)
+                    
+                    Text(self.usingHex ? "#\(String(format: "%02X", self.randomR))\(String(format: "%02X", self.randomG))\(String(format: "%02X", self.randomB))" : "(\(self.randomR), \(self.randomG), \(self.randomB))")
+                        .foregroundColor(isColorTooBright() ? .black : .white)
+                }
+            }).buttonStyle(PlainButtonStyle())
             
             Button(action: {
                 self.randomR = Int.random(in: 0 ..< 256)
