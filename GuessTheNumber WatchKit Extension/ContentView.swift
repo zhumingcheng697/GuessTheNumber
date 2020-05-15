@@ -47,7 +47,7 @@ struct UserGuessingView: View {
                     Text("Comfirm")
                 })
             }
-        }
+        }.navigationBarTitle(Text("Let Me Guess"))
     }
 }
 
@@ -121,12 +121,13 @@ struct AiGuessingView: View {
                     }
                 }
             }
-        }
+        }.navigationBarTitle(Text("Let AI Guess"))
     }
 }
 
 struct RandomizerView: View {
     let upperRange: Int
+    @Binding var usingHex: Bool
     
     var body: some View {
         VStack {
@@ -138,9 +139,9 @@ struct RandomizerView: View {
                 }
             })
             
-            NavigationLink(destination: RandomColorView(), label: {
+            NavigationLink(destination: RandomColorView(usingHex: self.$usingHex), label: {
                 HStack {
-                    Image(systemName: "eyedropper.halffull")
+                    Image(systemName: "eyedropper")
                         .imageScale(.large)
                     Text("Color")
                 }
@@ -148,12 +149,12 @@ struct RandomizerView: View {
             
             NavigationLink(destination: RandomBooleanView(), label: {
                 HStack {
-                    Image(systemName: "checkmark.circle")
+                    Image(systemName: "questionmark.circle")
                         .imageScale(.large)
                     Text("Boolean")
                 }
             })
-        }
+        }.navigationBarTitle(Text("Randomizer"))
     }
 }
 
@@ -175,12 +176,12 @@ struct RandomNumberView: View {
             }, label: {
                 Text("Randomize")
             })
-        }
+        }.navigationBarTitle(Text("Number"))
     }
 }
 
 struct RandomColorView: View {
-    @State var usingHex = prefersUsingHex
+    @Binding var usingHex: Bool
     @State var randomR = Int.random(in: 0 ..< 256)
     @State var randomG = Int.random(in: 0 ..< 256)
     @State var randomB = Int.random(in: 0 ..< 256)
@@ -188,7 +189,7 @@ struct RandomColorView: View {
     func isColorTooBright() -> Bool {
         let maxC = [self.randomR, self.randomG, self.randomB].max()!
         let minC = [self.randomR, self.randomG, self.randomB].min()!
-        return Double(maxC + minC) / 2 / 255 >= 0.575
+        return Double(maxC + minC) / 2 / 255 >= 0.53
     }
     
     var body: some View {
@@ -216,7 +217,7 @@ struct RandomColorView: View {
             }, label: {
                 Text("Randomize")
             })
-        }
+        }.navigationBarTitle(Text("Color"))
     }
 }
 
@@ -244,19 +245,56 @@ struct RandomBooleanView: View {
             }, label: {
                 Text("Randomize")
             })
-        }
+        }.navigationBarTitle(Text("Boolean"))
     }
 }
 
 struct SettingsView: View {
+    @Binding var usingHex: Bool
+    @Binding var upperRange: Int
+    @Binding var isEditingUpperRange: Bool
+    
+    func setPrefersUsingHex() -> String {
+        UserDefaults.standard.set(self.usingHex, forKey: "userPrefersUsingHex")
+        return "Use Hex Value for Colors"
+    }
+    var body: some View {
+        List {
+            NavigationLink(destination: UpperRangeSettingsView(upperRange: self.$upperRange, isEditingSettings: self.$isEditingUpperRange, pendingUpperRange: self.upperRange), isActive: self.$isEditingUpperRange, label: {
+                HStack {
+                    Text("Upper Range for Numbers")
+                    
+                    Spacer()
+                    
+                    Text("\(String(repeating: "   ", count: max(3 - String(self.upperRange).count, 0)))\(self.upperRange)")
+                        .foregroundColor(.gray)
+                }
+            })
+                .padding(.vertical)
+
+            Toggle(isOn: self.$usingHex) {
+                Text(setPrefersUsingHex())
+            }
+                .padding(.vertical)
+                .onReceive([self.usingHex].publisher.first()) { _ in
+                    UserDefaults.standard.set(self.usingHex, forKey: "userPrefersUsingHex")}
+                .onTapGesture(perform: {
+                    self.usingHex.toggle()
+                    UserDefaults.standard.set(self.usingHex, forKey: "userPrefersUsingHex")
+                })
+        }.navigationBarTitle(Text("Settings"))
+    }
+}
+
+struct UpperRangeSettingsView: View {
     @Binding var upperRange: Int
     @Binding var isEditingSettings: Bool
     @State var pendingUpperRange: Int
     
     var body: some View {
         VStack {
-            Picker(selection: $pendingUpperRange, label: Text("Upper Range")) {
-                ForEach([9, 99, 255, 999], id: \.self) { upper in
+            Picker(selection: $pendingUpperRange, label: EmptyView()) {
+                ForEach([9, 99, 255, 999, 1023], id: \.self) { upper in
                     Text("\(upper)")
                         .font(.system(size: 22, weight: .medium, design: .rounded))
                 }
@@ -265,17 +303,17 @@ struct SettingsView: View {
             Button(action: {
                 self.isEditingSettings = false
                 self.upperRange = self.pendingUpperRange
-                setUpperRange = self.pendingUpperRange
                 UserDefaults.standard.set(self.pendingUpperRange, forKey: "userSetUpperRange")
             }, label: {
                 Text("Done")
             })
-        }
+        }.navigationBarTitle(Text("Upper Range"))
     }
 }
 
 struct ContentView: View {
     @State var upperRange = setUpperRange
+    @State var usingHex = prefersUsingHex
     @State var userGuessingCorrectNumber = 0
     @State var userGuessedNumber = 0
     @State var userGuessedTimes = 0
@@ -285,7 +323,7 @@ struct ContentView: View {
     @State var aiGuessedTimes = 0
     @State var isUserGuessing = false
     @State var isAiGuessing = false
-    @State var isEditingSettings = false
+    @State var isEditingUpperRange = false
     @State var showCompareResult = false
     @State var hasAiWon = false
     
@@ -342,7 +380,7 @@ struct ContentView: View {
                             }))
                     })
                     
-                    NavigationLink(destination: RandomizerView(upperRange: self.upperRange), label: {
+                    NavigationLink(destination: RandomizerView(upperRange: self.upperRange, usingHex: self.$usingHex), label: {
                         HStack {
                             Image(systemName: "dial.fill")
                                 .imageScale(.large)
@@ -350,14 +388,16 @@ struct ContentView: View {
                         }
                     })
                     
-                    NavigationLink(destination: SettingsView(upperRange: self.$upperRange, isEditingSettings: self.$isEditingSettings, pendingUpperRange: self.upperRange), isActive: self.$isEditingSettings, label: {
+                    NavigationLink(destination: SettingsView(usingHex: self.$usingHex, upperRange: self.$upperRange, isEditingUpperRange: self.$isEditingUpperRange), label: {
                         HStack {
                             Image(systemName: "gear")
                                 .imageScale(.large)
                             Text("Settings")
                         }
                     })
-                }.frame(minHeight: geo.size.height)
+                }
+                    .frame(minHeight: geo.size.height)
+                    .navigationBarTitle(Text("Guess"))
             }
         }
     }
