@@ -254,10 +254,6 @@ struct SettingsView: View {
     @Binding var upperRange: Int
     @Binding var isEditingUpperRange: Bool
     
-    func setPrefersUsingHex() -> String {
-        UserDefaults.standard.set(self.usingHex, forKey: "userPrefersUsingHex")
-        return "Use Hex Value for Colors"
-    }
     var body: some View {
         List {
             NavigationLink(destination: UpperRangeSettingsView(upperRange: self.$upperRange, isEditingSettings: self.$isEditingUpperRange, pendingUpperRange: self.upperRange), isActive: self.$isEditingUpperRange, label: {
@@ -273,7 +269,7 @@ struct SettingsView: View {
                 .padding(.vertical)
 
             Toggle(isOn: self.$usingHex) {
-                Text(setPrefersUsingHex())
+                Text("Use Hex Value for Colors")
             }
                 .padding(.vertical)
                 .onReceive([self.usingHex].publisher.first()) { _ in
