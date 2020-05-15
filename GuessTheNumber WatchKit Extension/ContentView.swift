@@ -9,7 +9,7 @@
 import SwiftUI
 
 struct UserGuessingView: View {
-    @Binding var upperRange: Int
+    let upperRange: Int
     @Binding var userGuessedNumber: Int
     @Binding var userGuessedTimes: Int
     @Binding var showCompareResult: Bool
@@ -52,7 +52,7 @@ struct UserGuessingView: View {
 }
 
 struct AiGuessingView: View {
-    @Binding var upperRange: Int
+    let upperRange: Int
     @Binding var aiGuessingLowerLimit: Int
     @Binding var aiGuessingUpperLimit: Int
     @Binding var aiGuessedNumber: Int
@@ -125,6 +125,122 @@ struct AiGuessingView: View {
     }
 }
 
+struct RandomizerView: View {
+    let upperRange: Int
+    
+    var body: some View {
+        VStack {
+            NavigationLink(destination: RandomNumberView(upperRange: self.upperRange, randomNumber: Int.random(in: 0 ..< self.upperRange + 1)), label: {
+                HStack {
+                    Image(systemName: "textformat.123")
+                        .imageScale(.large)
+                    Text("Number")
+                }
+            })
+            
+            NavigationLink(destination: RandomColorView(), label: {
+                HStack {
+                    Image(systemName: "eyedropper.halffull")
+                        .imageScale(.large)
+                    Text("Color")
+                }
+            })
+            
+            NavigationLink(destination: RandomBooleanView(), label: {
+                HStack {
+                    Image(systemName: "checkmark.circle")
+                        .imageScale(.large)
+                    Text("Boolean")
+                }
+            })
+        }
+    }
+}
+
+struct RandomNumberView: View {
+    let upperRange: Int
+    @State var randomNumber: Int
+    
+    var body: some View {
+        VStack {
+            Spacer()
+            
+            Text("\(self.randomNumber)")
+                .font(.system(.largeTitle, design: .rounded))
+            
+            Spacer()
+            
+            Button(action: {
+                self.randomNumber = Int.random(in: 0 ..< self.upperRange + 1)
+            }, label: {
+                Text("Randomize")
+            })
+        }
+    }
+}
+
+struct RandomColorView: View {
+    @State var randomR = Int.random(in: 0 ..< 256)
+    @State var randomG = Int.random(in: 0 ..< 256)
+    @State var randomB = Int.random(in: 0 ..< 256)
+    
+    func isColorTooBright() -> Bool {
+        let maxC = [self.randomR, self.randomG, self.randomB].max()!
+        let minC = [self.randomR, self.randomG, self.randomB].min()!
+        return Double(maxC + minC) / 2 / 255 >= 0.575
+    }
+    
+    var body: some View {
+        VStack {
+            ZStack {
+                Rectangle()
+                    .foregroundColor(Color(red: Double(self.randomR) / 255.0, green: Double(self.randomG) / 255.0, blue: Double(self.randomB) / 255.0))
+                    .cornerRadius(10)
+                    .animation(.default)
+                
+                Text("(\(self.randomR), \(self.randomG), \(self.randomB))")
+                    .foregroundColor(isColorTooBright() ? .black : .white)
+            }
+            
+            Button(action: {
+                self.randomR = Int.random(in: 0 ..< 256)
+                self.randomG = Int.random(in: 0 ..< 256)
+                self.randomB = Int.random(in: 0 ..< 256)
+            }, label: {
+                Text("Randomize")
+            })
+        }
+    }
+}
+
+struct RandomBooleanView: View {
+    @State var randomDouble = Double.random(in: -10.0 ... 10.0)
+    
+    var body: some View {
+        VStack {
+            Spacer()
+            
+            HStack {
+                Text("\(randomDouble >= 0 ? "True" : "False")")
+                    .font(.system(.largeTitle, design: .rounded))
+                    .foregroundColor(randomDouble >= 0 ? .green : .red)
+                
+                Image(systemName: "\(randomDouble >= 0 ? "checkmark" : "xmark")")
+                    .font(.system(.largeTitle, design: .rounded))
+                    .foregroundColor(randomDouble >= 0 ? .green : .red)
+            }
+            
+            Spacer()
+            
+            Button(action: {
+                self.randomDouble = Double.random(in: -10.0 ... 10.0)
+            }, label: {
+                Text("Randomize")
+            })
+        }
+    }
+}
+
 struct SettingsView: View {
     @Binding var upperRange: Int
     @Binding var isEditingSettings: Bool
@@ -142,6 +258,7 @@ struct SettingsView: View {
             Button(action: {
                 self.isEditingSettings = false
                 self.upperRange = self.pendingUpperRange
+                setUpperRange = self.pendingUpperRange
                 UserDefaults.standard.set(self.pendingUpperRange, forKey: "userSetUpperRange")
             }, label: {
                 Text("Done")
@@ -179,51 +296,62 @@ struct ContentView: View {
     }
     
     var body: some View {
-        VStack {
-            NavigationLink(destination: UserGuessingView(upperRange: $upperRange, userGuessedNumber: $userGuessedNumber, userGuessedTimes: $userGuessedTimes, showCompareResult: $showCompareResult), isActive: $isUserGuessing, label: {
-                HStack {
-                    Image(systemName: "person.crop.circle.fill")
-                        .imageScale(.large)
-                    Text("Let Me Guess")
-                }
-            }).simultaneousGesture(TapGesture().onEnded{
-                self.resetUserGuessing()
-            }).alert(isPresented: $showCompareResult, content: {
-                if self.userGuessedNumber == self.userGuessingCorrectNumber {
-                    return Alert(title: Text("Congratulations"), message: Text("You get the number (\(self.userGuessingCorrectNumber)) in \(self.userGuessedTimes) \(self.userGuessedTimes == 1 ? "try" : "tries")!"), primaryButton: .cancel(Text("Home"), action: {
-                            self.isUserGuessing = false
-                        }), secondaryButton: .default(Text("Restart"), action: {
-                            self.resetUserGuessing()
-                        }))
-                } else {
-                     return Alert(title: Text("Try \(self.userGuessedNumber > self.userGuessingCorrectNumber ? "lower" : "higher")"), message: Text("Trial: \(self.userGuessedTimes)"))
-                }
-            })
-            
-            NavigationLink(destination: AiGuessingView(upperRange: $upperRange, aiGuessingLowerLimit: $aiGuessingLowerLimit, aiGuessingUpperLimit: $aiGuessingUpperLimit, aiGuessedNumber: $aiGuessedNumber, aiGuessedTimes: $aiGuessedTimes, hasAiWon: $hasAiWon), isActive: $isAiGuessing, label: {
-                HStack {
-                    Image(systemName: "gamecontroller.fill")
-                        .imageScale(.large)
-                    Text("Let AI Guess")
-                }
-            }).simultaneousGesture(TapGesture().onEnded{
-                self.resetAiGuessing()
-            }).alert(isPresented: $hasAiWon, content: {
-                Alert(title: Text("Hurray"), message: Text("AI gets the number (\(self.aiGuessedNumber)) in \(self.aiGuessedTimes) \(self.aiGuessedTimes == 1 ? "try" : "tries")!"), primaryButton: .cancel(Text("Home"), action: {
-                        self.isAiGuessing = false
-                    }), secondaryButton: .default(Text("Restart"), action: {
+        GeometryReader { geo in
+            ScrollView {
+                VStack {
+                    NavigationLink(destination: UserGuessingView(upperRange: self.upperRange, userGuessedNumber: self.$userGuessedNumber, userGuessedTimes: self.$userGuessedTimes, showCompareResult: self.$showCompareResult), isActive: self.$isUserGuessing, label: {
+                        HStack {
+                            Image(systemName: "person.crop.circle.fill")
+                                .imageScale(.large)
+                            Text("Let Me Guess")
+                        }
+                    }).simultaneousGesture(TapGesture().onEnded{
+                        self.resetUserGuessing()
+                    }).alert(isPresented: self.$showCompareResult, content: {
+                        if self.userGuessedNumber == self.userGuessingCorrectNumber {
+                            return Alert(title: Text("Congratulations"), message: Text("You get the number (\(self.userGuessingCorrectNumber)) in \(self.userGuessedTimes) \(self.userGuessedTimes == 1 ? "try" : "tries")!"), primaryButton: .cancel(Text("Home"), action: {
+                                    self.isUserGuessing = false
+                                }), secondaryButton: .default(Text("Restart"), action: {
+                                    self.resetUserGuessing()
+                                }))
+                        } else {
+                             return Alert(title: Text("Try \(self.userGuessedNumber > self.userGuessingCorrectNumber ? "lower" : "higher")"), message: Text("Trial: \(self.userGuessedTimes)"))
+                        }
+                    })
+                    
+                    NavigationLink(destination: AiGuessingView(upperRange: self.upperRange, aiGuessingLowerLimit: self.$aiGuessingLowerLimit, aiGuessingUpperLimit: self.$aiGuessingUpperLimit, aiGuessedNumber: self.$aiGuessedNumber, aiGuessedTimes: self.$aiGuessedTimes, hasAiWon: self.$hasAiWon), isActive: self.$isAiGuessing, label: {
+                        HStack {
+                            Image(systemName: "gamecontroller.fill")
+                                .imageScale(.large)
+                            Text("Let AI Guess")
+                        }
+                    }).simultaneousGesture(TapGesture().onEnded{
                         self.resetAiGuessing()
-                    }))
-            })
-            
-            NavigationLink(destination: SettingsView(upperRange: $upperRange, isEditingSettings: $isEditingSettings, pendingUpperRange: self.upperRange), isActive: $isEditingSettings, label: {
-                HStack {
-                    Image(systemName: "gear")
-                        .imageScale(.large)
-                    Text("Settings")
-                }
-            })
-            
+                    }).alert(isPresented: self.$hasAiWon, content: {
+                        Alert(title: Text("Hurray"), message: Text("AI gets the number (\(self.aiGuessedNumber)) in \(self.aiGuessedTimes) \(self.aiGuessedTimes == 1 ? "try" : "tries")!"), primaryButton: .cancel(Text("Home"), action: {
+                                self.isAiGuessing = false
+                            }), secondaryButton: .default(Text("Restart"), action: {
+                                self.resetAiGuessing()
+                            }))
+                    })
+                    
+                    NavigationLink(destination: RandomizerView(upperRange: self.upperRange), label: {
+                        HStack {
+                            Image(systemName: "dial.fill")
+                                .imageScale(.large)
+                            Text("Randomizer")
+                        }
+                    })
+                    
+                    NavigationLink(destination: SettingsView(upperRange: self.$upperRange, isEditingSettings: self.$isEditingSettings, pendingUpperRange: self.upperRange), isActive: self.$isEditingSettings, label: {
+                        HStack {
+                            Image(systemName: "gear")
+                                .imageScale(.large)
+                            Text("Settings")
+                        }
+                    })
+                }.frame(minHeight: geo.size.height)
+            }
         }
     }
 }
