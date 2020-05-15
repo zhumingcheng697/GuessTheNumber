@@ -33,7 +33,7 @@ struct UserGuessingView: View {
                     Text("Ready")
                 })
             } else {
-                Picker(selection: $userGuessedNumber, label: Text("My Guess")) {
+                Picker(selection: $userGuessedNumber, label: EmptyView()) {
                     ForEach(0 ..< Int(self.upperRange) + 1) { index in
                         Text("\(index)")
                             .font(.system(size: 22, weight: .medium, design: .rounded))
@@ -85,7 +85,7 @@ struct AiGuessingView: View {
                                 Spacer()
                             }
                             
-                            Text(self.aiGuessingLowerLimit == self.aiGuessingUpperLimit ? "   It is \(self.aiGuessedNumber)!   " : "   Is it \(self.aiGuessedNumber)?   ")
+                            Text(self.aiGuessingLowerLimit == self.aiGuessingUpperLimit ? "\(String(repeating: " ", count: max(8 - String(self.aiGuessedNumber).count, 0)))It is \(self.aiGuessedNumber)!\(String(repeating: " ", count: max(8 - String(self.aiGuessedNumber).count, 0)))" : "\(String(repeating: " ", count: max(8 - String(self.aiGuessedNumber).count, 0)))Is it \(self.aiGuessedNumber)?\(String(repeating: " ", count: max(8 - String(self.aiGuessedNumber).count, 0)))")
 
                             Spacer()
                             
@@ -350,7 +350,7 @@ struct ContentView: View {
                         self.resetUserGuessing()
                     }).alert(isPresented: self.$showCompareResult, content: {
                         if self.userGuessedNumber == self.userGuessingCorrectNumber {
-                            return Alert(title: Text("Congratulations"), message: Text("You get the number (\(self.userGuessingCorrectNumber)) in \(self.userGuessedTimes) \(self.userGuessedTimes == 1 ? "try" : "tries")!"), primaryButton: .cancel(Text("Home"), action: {
+                            return Alert(title: Text("Yay"), message: Text("You get the number (\(self.userGuessingCorrectNumber)) in \(self.userGuessedTimes) \(self.userGuessedTimes == 1 ? "try" : "tries")!"), primaryButton: .cancel(Text("Home"), action: {
                                     self.isUserGuessing = false
                                 }), secondaryButton: .default(Text("Restart"), action: {
                                     self.resetUserGuessing()
