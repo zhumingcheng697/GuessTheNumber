@@ -64,7 +64,7 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
             
         case CLKComplicationFamily.graphicBezel:
             let circularTmpl = CLKComplicationTemplateGraphicCircularImage()
-            circularTmpl.imageProvider = CLKFullColorImageProvider(fullColorImage: UIImage(named: "Complication/Graphic Bezel")!)
+            circularTmpl.imageProvider = CLKFullColorImageProvider(fullColorImage: UIImage(named: "Complication/Graphic Bezel")!, tintedImageProvider: CLKImageProvider(onePieceImage: UIImage(named: "Complication/Graphic Bezel")!))
             let tmpl = CLKComplicationTemplateGraphicBezelCircularText()
             tmpl.circularTemplate = circularTmpl
             tmpl.textProvider = CLKSimpleTextProvider(text: "Guess The Number", shortText: "Guess")
@@ -72,12 +72,12 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
             
         case CLKComplicationFamily.graphicCircular:
             let tmpl = CLKComplicationTemplateGraphicCircularImage()
-            tmpl.imageProvider = CLKFullColorImageProvider(fullColorImage: UIImage(named: "Complication/Graphic Circular")!)
+            tmpl.imageProvider = CLKFullColorImageProvider(fullColorImage: UIImage(named: "Complication/Graphic Circular")!, tintedImageProvider: CLKImageProvider(onePieceImage: UIImage(named: "Complication/Graphic Circular")!))
             handler(tmpl)
             
         case CLKComplicationFamily.graphicCorner:
             let tmpl = CLKComplicationTemplateGraphicCornerCircularImage()
-            tmpl.imageProvider = CLKFullColorImageProvider(fullColorImage: UIImage(named: "Graphic Corner")!)
+            tmpl.imageProvider = CLKFullColorImageProvider(fullColorImage: UIImage(named: "Graphic Corner")!, tintedImageProvider: CLKImageProvider(onePieceImage: UIImage(named: "Graphic Corner")!))
             handler(tmpl)
             
         case CLKComplicationFamily.modularSmall:
