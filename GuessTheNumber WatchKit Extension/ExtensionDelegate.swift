@@ -8,19 +8,31 @@
 
 import WatchKit
 
-var setUpperRange = 99
-var prefersUsingHex = false
-
 class ExtensionDelegate: NSObject, WKExtensionDelegate {
+    
+    func handleUserActivity(_ userInfo: [AnyHashable : Any]?) {
+        guessData.isUserGuessing = false
+        guessData.isAiGuessing = false
+        guessData.isInRandomizer = true
+        guessData.isRandomizingNumber = false
+        guessData.isRandomizingColor = false
+        guessData.isRandomizingBoolean = false
+        guessData.isInSettings = false
+        guessData.isEditingUpperRange = false
+        guessData.showCompareResult = false
+        guessData.hasAiWon = false
+    }
 
     func applicationDidFinishLaunching() {
         // Perform any final initialization of your application.
         let restoredUpperRange = UserDefaults.standard.integer(forKey: "userSetUpperRange")
         if restoredUpperRange != 0 {
-            setUpperRange = restoredUpperRange
+            guessData.upperRange = restoredUpperRange
+            guessData.aiGuessingUpperLimit = restoredUpperRange
+            guessData.aiGuessedNumber = Int((0 + restoredUpperRange + Int.random(in: 0 ... 1)) / 2)
         }
         
-        prefersUsingHex = UserDefaults.standard.bool(forKey: "userPrefersUsingHex")
+        guessData.usingHex = UserDefaults.standard.bool(forKey: "userPrefersUsingHex")
     }
 
     func applicationDidBecomeActive() {

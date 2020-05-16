@@ -153,7 +153,7 @@ struct RandomizerView: View {
     
     var body: some View {
         VStack {
-            NavigationLink(destination: RandomNumberView(randomNumber: Int.random(in: 0 ..< self.data.upperRange + 1)), label: {
+            NavigationLink(destination: RandomNumberView(randomNumber: Int.random(in: 0 ..< self.data.upperRange + 1)), isActive: self.$data.isRandomizingNumber, label: {
                 HStack {
                     Image(systemName: "textformat.123")
                         .imageScale(.large)
@@ -161,7 +161,7 @@ struct RandomizerView: View {
                 }
             })
             
-            NavigationLink(destination: RandomColorView(), label: {
+            NavigationLink(destination: RandomColorView(), isActive: self.$data.isRandomizingColor, label: {
                 HStack {
                     Image(systemName: "eyedropper")
                         .imageScale(.large)
@@ -169,7 +169,7 @@ struct RandomizerView: View {
                 }
             })
             
-            NavigationLink(destination: RandomBooleanView(), label: {
+            NavigationLink(destination: RandomBooleanView(), isActive: self.$data.isRandomizingBoolean, label: {
                 HStack {
                     Image(systemName: "questionmark.circle")
                         .imageScale(.large)
@@ -365,7 +365,7 @@ struct ContentView: View {
                         self.resetAiGuessing()
                     })
                     
-                    NavigationLink(destination: RandomizerView(), label: {
+                    NavigationLink(destination: RandomizerView(), isActive: self.$data.isInRandomizer, label: {
                         HStack {
                             Image(systemName: "dial.fill")
                                 .imageScale(.large)
@@ -373,7 +373,7 @@ struct ContentView: View {
                         }
                     })
                     
-                    NavigationLink(destination: SettingsView(), label: {
+                    NavigationLink(destination: SettingsView(), isActive: self.$data.isInSettings, label: {
                         HStack {
                             Image(systemName: "gear")
                                 .imageScale(.large)
