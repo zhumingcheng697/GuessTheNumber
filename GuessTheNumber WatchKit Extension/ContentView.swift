@@ -9,17 +9,20 @@
 import SwiftUI
 
 struct UserGuessingView: View {
-    let upperRange: Int
-    @Binding var userGuessedNumber: Int
-    @Binding var userGuessedTimes: Int
-    @Binding var showCompareResult: Bool
+    @EnvironmentObject var data: GuessData
+    
+    private func resetUserGuessing() {
+        self.data.userGuessingCorrectNumber = Int.random(in: 0 ..< self.data.upperRange + 1)
+        self.data.userGuessedNumber = -1
+        self.data.userGuessedTimes = 0
+    }
     
     var body: some View {
         VStack {
-            if self.userGuessedNumber == -1 {
+            if self.data.userGuessedNumber == -1 {
                 Spacer()
                 
-                Text("Guess a number between 0 and \(Int(self.upperRange))")
+                Text("Guess a number between 0 and \(Int(self.data.upperRange))")
                     .font(.headline)
                     .multilineTextAlignment(.center)
 
@@ -27,44 +30,57 @@ struct UserGuessingView: View {
                 
                 Button(action: {
                     withAnimation {
-                        self.userGuessedNumber = 0
+                        self.data.userGuessedNumber = 0
                     }
                 }, label: {
                     Text("Ready")
                 })
             } else {
-                Picker(selection: $userGuessedNumber, label: EmptyView()) {
-                    ForEach(0 ..< Int(self.upperRange) + 1) { index in
+                Picker(selection: self.$data.userGuessedNumber, label: EmptyView()) {
+                    ForEach(0 ..< Int(self.data.upperRange) + 1) { index in
                         Text("\(index)")
                             .font(.system(size: 22, weight: .medium, design: .rounded))
                     }
                 }
                 
                 Button(action: {
-                    self.showCompareResult = true
-                    self.userGuessedTimes += 1
+                    self.data.showCompareResult = true
+                    self.data.userGuessedTimes += 1
                 }, label: {
                     Text("Comfirm")
                 })
             }
         }.navigationBarTitle(Text("Let Me Guess"))
+        .alert(isPresented: self.$data.showCompareResult, content: {
+            if self.data.userGuessedNumber == self.data.userGuessingCorrectNumber {
+                return Alert(title: Text("Yay"), message: Text("You get the number (\(self.data.userGuessingCorrectNumber)) in \(self.data.userGuessedTimes) \(self.data.userGuessedTimes == 1 ? "try" : "tries")!"), primaryButton: .cancel(Text("Home"), action: {
+                        self.data.isUserGuessing = false
+                    }), secondaryButton: .default(Text("Restart"), action: {
+                        self.resetUserGuessing()
+                    }))
+            } else {
+                 return Alert(title: Text("Try \(self.data.userGuessedNumber > self.data.userGuessingCorrectNumber ? "lower" : "higher")"), message: Text("Trial: \(self.data.userGuessedTimes)"))
+            }
+        })
     }
 }
 
 struct AiGuessingView: View {
-    let upperRange: Int
-    @Binding var aiGuessingLowerLimit: Int
-    @Binding var aiGuessingUpperLimit: Int
-    @Binding var aiGuessedNumber: Int
-    @Binding var aiGuessedTimes: Int
-    @Binding var hasAiWon: Bool
+    @EnvironmentObject var data: GuessData
+    
+    private func resetAiGuessing() {
+        self.data.aiGuessingLowerLimit = 0
+        self.data.aiGuessingUpperLimit = self.data.upperRange
+        self.data.aiGuessedNumber = Int((self.data.aiGuessingLowerLimit + self.data.aiGuessingUpperLimit + Int.random(in: 0 ... 1)) / 2)
+        self.data.aiGuessedTimes = 0
+    }
     
     var body: some View {
         VStack(alignment: .center) {
-            if self.aiGuessedTimes == 0 {
+            if self.data.aiGuessedTimes == 0 {
                 Spacer()
                 
-                Text("Choose a number between 0 and \(Int(self.upperRange))")
+                Text("Choose a number between 0 and \(Int(self.data.upperRange))")
                     .font(.headline)
                     .multilineTextAlignment(.center)
 
@@ -72,7 +88,7 @@ struct AiGuessingView: View {
                 
                 Button(action: {
                     withAnimation {
-                        self.aiGuessedTimes += 1
+                        self.data.aiGuessedTimes += 1
                     }
                 }, label: {
                     Text("Ready")
@@ -81,36 +97,36 @@ struct AiGuessingView: View {
                 GeometryReader { geo in
                     ScrollView {
                         VStack(alignment: .center) {
-                            if self.aiGuessingLowerLimit == self.aiGuessedNumber || self.aiGuessingUpperLimit == self.aiGuessedNumber {
+                            if self.data.aiGuessingLowerLimit == self.data.aiGuessedNumber || self.data.aiGuessingUpperLimit == self.data.aiGuessedNumber {
                                 Spacer()
                             }
                             
-                            Text(self.aiGuessingLowerLimit == self.aiGuessingUpperLimit ? "\(String(repeating: " ", count: max(8 - String(self.aiGuessedNumber).count, 0)))It is \(self.aiGuessedNumber)!\(String(repeating: " ", count: max(8 - String(self.aiGuessedNumber).count, 0)))" : "\(String(repeating: " ", count: max(8 - String(self.aiGuessedNumber).count, 0)))Is it \(self.aiGuessedNumber)?\(String(repeating: " ", count: max(8 - String(self.aiGuessedNumber).count, 0)))")
+                            Text(self.data.aiGuessingLowerLimit == self.data.aiGuessingUpperLimit ? "\(String(repeating: " ", count: max(8 - String(self.data.aiGuessedNumber).count, 0)))It is \(self.data.aiGuessedNumber)!\(String(repeating: " ", count: max(8 - String(self.data.aiGuessedNumber).count, 0)))" : "\(String(repeating: " ", count: max(8 - String(self.data.aiGuessedNumber).count, 0)))Is it \(self.data.aiGuessedNumber)?\(String(repeating: " ", count: max(8 - String(self.data.aiGuessedNumber).count, 0)))")
 
                             Spacer()
                             
                             Button(action: {
-                                self.hasAiWon = true
+                                self.data.hasAiWon = true
                             }, label: {
                                 Text("Correct")
                             })
                                 .accentColor(.green)
                         
-                            if self.aiGuessingLowerLimit != self.aiGuessedNumber {
+                            if self.data.aiGuessingLowerLimit != self.data.aiGuessedNumber {
                                 Button(action: {
-                                    self.aiGuessedTimes += 1
-                                    self.aiGuessingUpperLimit = self.aiGuessedNumber - 1
-                                    self.aiGuessedNumber = Int((self.aiGuessingLowerLimit + self.aiGuessingUpperLimit + Int.random(in: 0 ... 1)) / 2)
+                                    self.data.aiGuessedTimes += 1
+                                    self.data.aiGuessingUpperLimit = self.data.aiGuessedNumber - 1
+                                    self.data.aiGuessedNumber = Int((self.data.aiGuessingLowerLimit + self.data.aiGuessingUpperLimit + Int.random(in: 0 ... 1)) / 2)
                                 }, label: {
                                     Text("Too High")
                                 }).accentColor(.red)
                             }
                             
-                            if self.aiGuessingUpperLimit != self.aiGuessedNumber {
+                            if self.data.aiGuessingUpperLimit != self.data.aiGuessedNumber {
                                 Button(action: {
-                                    self.aiGuessedTimes += 1
-                                    self.aiGuessingLowerLimit = self.aiGuessedNumber + 1
-                                    self.aiGuessedNumber = Int((self.aiGuessingLowerLimit + self.aiGuessingUpperLimit + Int.random(in: 0 ... 1)) / 2)
+                                    self.data.aiGuessedTimes += 1
+                                    self.data.aiGuessingLowerLimit = self.data.aiGuessedNumber + 1
+                                    self.data.aiGuessedNumber = Int((self.data.aiGuessingLowerLimit + self.data.aiGuessingUpperLimit + Int.random(in: 0 ... 1)) / 2)
                                 }, label: {
                                     Text("Too Low")
                                 }).accentColor(.red)
@@ -122,16 +138,22 @@ struct AiGuessingView: View {
                 }
             }
         }.navigationBarTitle(Text("Let AI Guess"))
+        .alert(isPresented: self.$data.hasAiWon, content: {
+            Alert(title: Text("Hurray"), message: Text("AI gets the number (\(self.data.aiGuessedNumber)) in \(self.data.aiGuessedTimes) \(self.data.aiGuessedTimes == 1 ? "try" : "tries")!"), primaryButton: .cancel(Text("Home"), action: {
+                    self.data.isAiGuessing = false
+                }), secondaryButton: .default(Text("Restart"), action: {
+                    self.resetAiGuessing()
+                }))
+        })
     }
 }
 
 struct RandomizerView: View {
-    let upperRange: Int
-    @Binding var usingHex: Bool
+    @EnvironmentObject var data: GuessData
     
     var body: some View {
         VStack {
-            NavigationLink(destination: RandomNumberView(upperRange: self.upperRange, randomNumber: Int.random(in: 0 ..< self.upperRange + 1)), label: {
+            NavigationLink(destination: RandomNumberView(randomNumber: Int.random(in: 0 ..< self.data.upperRange + 1)), label: {
                 HStack {
                     Image(systemName: "textformat.123")
                         .imageScale(.large)
@@ -139,7 +161,7 @@ struct RandomizerView: View {
                 }
             })
             
-            NavigationLink(destination: RandomColorView(usingHex: self.$usingHex), label: {
+            NavigationLink(destination: RandomColorView(), label: {
                 HStack {
                     Image(systemName: "eyedropper")
                         .imageScale(.large)
@@ -159,7 +181,7 @@ struct RandomizerView: View {
 }
 
 struct RandomNumberView: View {
-    let upperRange: Int
+    @EnvironmentObject var data: GuessData
     @State var randomNumber: Int
     
     var body: some View {
@@ -172,7 +194,7 @@ struct RandomNumberView: View {
             Spacer()
             
             Button(action: {
-                self.randomNumber = Int.random(in: 0 ..< self.upperRange + 1)
+                self.randomNumber = Int.random(in: 0 ..< self.data.upperRange + 1)
             }, label: {
                 Text("Randomize")
             })
@@ -181,7 +203,7 @@ struct RandomNumberView: View {
 }
 
 struct RandomColorView: View {
-    @Binding var usingHex: Bool
+    @EnvironmentObject var data: GuessData
     @State var randomR = Int.random(in: 0 ..< 256)
     @State var randomG = Int.random(in: 0 ..< 256)
     @State var randomB = Int.random(in: 0 ..< 256)
@@ -195,9 +217,8 @@ struct RandomColorView: View {
     var body: some View {
         VStack {
             Button(action: {
-                self.usingHex.toggle()
-                prefersUsingHex.toggle()
-                UserDefaults.standard.set(self.usingHex, forKey: "userPrefersUsingHex")
+                self.data.usingHex.toggle()
+                UserDefaults.standard.set(self.data.usingHex, forKey: "userPrefersUsingHex")
             }, label: {
                 ZStack {
                     Rectangle()
@@ -205,7 +226,7 @@ struct RandomColorView: View {
                         .cornerRadius(8)
                         .animation(.default)
                     
-                    Text(self.usingHex ? "#\(String(format: "%02X", self.randomR))\(String(format: "%02X", self.randomG))\(String(format: "%02X", self.randomB))" : "(\(self.randomR), \(self.randomG), \(self.randomB))")
+                    Text(self.data.usingHex ? "#\(String(format: "%02X", self.randomR))\(String(format: "%02X", self.randomG))\(String(format: "%02X", self.randomB))" : "(\(self.randomR), \(self.randomG), \(self.randomB))")
                         .foregroundColor(isColorTooBright() ? .black : .white)
                 }
             }).buttonStyle(PlainButtonStyle())
@@ -250,41 +271,38 @@ struct RandomBooleanView: View {
 }
 
 struct SettingsView: View {
-    @Binding var usingHex: Bool
-    @Binding var upperRange: Int
-    @Binding var isEditingUpperRange: Bool
+    @EnvironmentObject var data: GuessData
     
     var body: some View {
         List {
-            NavigationLink(destination: UpperRangeSettingsView(upperRange: self.$upperRange, isEditingSettings: self.$isEditingUpperRange, pendingUpperRange: self.upperRange), isActive: self.$isEditingUpperRange, label: {
+            NavigationLink(destination: UpperRangeSettingsView(pendingUpperRange: self.data.upperRange), isActive: self.$data.isEditingUpperRange, label: {
                 HStack {
                     Text("Upper Range for Numbers")
                     
                     Spacer()
                     
-                    Text("\(String(repeating: "   ", count: max(3 - String(self.upperRange).count, 0)))\(self.upperRange)")
+                    Text("\(String(repeating: "   ", count: max(3 - String(self.data.upperRange).count, 0)))\(self.data.upperRange)")
                         .foregroundColor(.gray)
                 }
             })
                 .padding(.vertical)
 
-            Toggle(isOn: self.$usingHex) {
+            Toggle(isOn: self.$data.usingHex) {
                 Text("Use Hex Value for Colors")
             }
                 .padding(.vertical)
-                .onReceive([self.usingHex].publisher.first()) { _ in
-                    UserDefaults.standard.set(self.usingHex, forKey: "userPrefersUsingHex")}
+                .onReceive([self.data.usingHex].publisher.first()) { _ in
+                    UserDefaults.standard.set(self.data.usingHex, forKey: "userPrefersUsingHex")}
                 .onTapGesture(perform: {
-                    self.usingHex.toggle()
-                    UserDefaults.standard.set(self.usingHex, forKey: "userPrefersUsingHex")
+                    self.data.usingHex.toggle()
+                    UserDefaults.standard.set(self.data.usingHex, forKey: "userPrefersUsingHex")
                 })
         }.navigationBarTitle(Text("Settings"))
     }
 }
 
 struct UpperRangeSettingsView: View {
-    @Binding var upperRange: Int
-    @Binding var isEditingSettings: Bool
+    @EnvironmentObject var data: GuessData
     @State var pendingUpperRange: Int
     
     var body: some View {
@@ -297,8 +315,8 @@ struct UpperRangeSettingsView: View {
             }
             
             Button(action: {
-                self.isEditingSettings = false
-                self.upperRange = self.pendingUpperRange
+                self.data.isEditingUpperRange = false
+                self.data.upperRange = self.pendingUpperRange
                 UserDefaults.standard.set(self.pendingUpperRange, forKey: "userSetUpperRange")
             }, label: {
                 Text("Done")
@@ -308,39 +326,26 @@ struct UpperRangeSettingsView: View {
 }
 
 struct ContentView: View {
-    @State var upperRange = setUpperRange
-    @State var usingHex = prefersUsingHex
-    @State var userGuessingCorrectNumber = 0
-    @State var userGuessedNumber = 0
-    @State var userGuessedTimes = 0
-    @State var aiGuessingLowerLimit = 0
-    @State var aiGuessingUpperLimit = setUpperRange
-    @State var aiGuessedNumber = Int((0 + setUpperRange + Int.random(in: 0 ... 1)) / 2)
-    @State var aiGuessedTimes = 0
-    @State var isUserGuessing = false
-    @State var isAiGuessing = false
-    @State var isEditingUpperRange = false
-    @State var showCompareResult = false
-    @State var hasAiWon = false
+    @EnvironmentObject var data: GuessData
     
     private func resetUserGuessing() {
-        self.userGuessingCorrectNumber = Int.random(in: 0 ..< self.upperRange + 1)
-        self.userGuessedNumber = -1
-        self.userGuessedTimes = 0
+        self.data.userGuessingCorrectNumber = Int.random(in: 0 ..< self.data.upperRange + 1)
+        self.data.userGuessedNumber = -1
+        self.data.userGuessedTimes = 0
     }
     
     private func resetAiGuessing() {
-        self.aiGuessingLowerLimit = 0
-        self.aiGuessingUpperLimit = self.upperRange
-        self.aiGuessedNumber = Int((self.aiGuessingLowerLimit + self.aiGuessingUpperLimit + Int.random(in: 0 ... 1)) / 2)
-        self.aiGuessedTimes = 0
+        self.data.aiGuessingLowerLimit = 0
+        self.data.aiGuessingUpperLimit = self.data.upperRange
+        self.data.aiGuessedNumber = Int((self.data.aiGuessingLowerLimit + self.data.aiGuessingUpperLimit + Int.random(in: 0 ... 1)) / 2)
+        self.data.aiGuessedTimes = 0
     }
     
     var body: some View {
         GeometryReader { geo in
             ScrollView {
                 VStack {
-                    NavigationLink(destination: UserGuessingView(upperRange: self.upperRange, userGuessedNumber: self.$userGuessedNumber, userGuessedTimes: self.$userGuessedTimes, showCompareResult: self.$showCompareResult), isActive: self.$isUserGuessing, label: {
+                    NavigationLink(destination: UserGuessingView(), isActive: self.$data.isUserGuessing, label: {
                         HStack {
                             Image(systemName: "person.crop.circle.fill")
                                 .imageScale(.large)
@@ -348,19 +353,9 @@ struct ContentView: View {
                         }
                     }).simultaneousGesture(TapGesture().onEnded{
                         self.resetUserGuessing()
-                    }).alert(isPresented: self.$showCompareResult, content: {
-                        if self.userGuessedNumber == self.userGuessingCorrectNumber {
-                            return Alert(title: Text("Yay"), message: Text("You get the number (\(self.userGuessingCorrectNumber)) in \(self.userGuessedTimes) \(self.userGuessedTimes == 1 ? "try" : "tries")!"), primaryButton: .cancel(Text("Home"), action: {
-                                    self.isUserGuessing = false
-                                }), secondaryButton: .default(Text("Restart"), action: {
-                                    self.resetUserGuessing()
-                                }))
-                        } else {
-                             return Alert(title: Text("Try \(self.userGuessedNumber > self.userGuessingCorrectNumber ? "lower" : "higher")"), message: Text("Trial: \(self.userGuessedTimes)"))
-                        }
                     })
                     
-                    NavigationLink(destination: AiGuessingView(upperRange: self.upperRange, aiGuessingLowerLimit: self.$aiGuessingLowerLimit, aiGuessingUpperLimit: self.$aiGuessingUpperLimit, aiGuessedNumber: self.$aiGuessedNumber, aiGuessedTimes: self.$aiGuessedTimes, hasAiWon: self.$hasAiWon), isActive: self.$isAiGuessing, label: {
+                    NavigationLink(destination: AiGuessingView(), isActive: self.$data.isAiGuessing, label: {
                         HStack {
                             Image(systemName: "gamecontroller.fill")
                                 .imageScale(.large)
@@ -368,15 +363,9 @@ struct ContentView: View {
                         }
                     }).simultaneousGesture(TapGesture().onEnded{
                         self.resetAiGuessing()
-                    }).alert(isPresented: self.$hasAiWon, content: {
-                        Alert(title: Text("Hurray"), message: Text("AI gets the number (\(self.aiGuessedNumber)) in \(self.aiGuessedTimes) \(self.aiGuessedTimes == 1 ? "try" : "tries")!"), primaryButton: .cancel(Text("Home"), action: {
-                                self.isAiGuessing = false
-                            }), secondaryButton: .default(Text("Restart"), action: {
-                                self.resetAiGuessing()
-                            }))
                     })
                     
-                    NavigationLink(destination: RandomizerView(upperRange: self.upperRange, usingHex: self.$usingHex), label: {
+                    NavigationLink(destination: RandomizerView(), label: {
                         HStack {
                             Image(systemName: "dial.fill")
                                 .imageScale(.large)
@@ -384,7 +373,7 @@ struct ContentView: View {
                         }
                     })
                     
-                    NavigationLink(destination: SettingsView(usingHex: self.$usingHex, upperRange: self.$upperRange, isEditingUpperRange: self.$isEditingUpperRange), label: {
+                    NavigationLink(destination: SettingsView(), label: {
                         HStack {
                             Image(systemName: "gear")
                                 .imageScale(.large)
@@ -401,6 +390,6 @@ struct ContentView: View {
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        ContentView()
+        ContentView().environmentObject(guessData)
     }
 }
