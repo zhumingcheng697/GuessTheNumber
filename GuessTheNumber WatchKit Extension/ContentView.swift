@@ -48,10 +48,23 @@ struct UserGuessingView: View {
         .alert(isPresented: self.$data.showCompareResult, content: {
             if self.data.userGuessedNumber == self.data.userGuessingCorrectNumber {
                 return Alert(title: Text("Yay"), message: Text("You get the number (\(self.data.userGuessingCorrectNumber)) in \(self.data.userGuessedTimes) \(self.data.userGuessedTimes == 1 ? "try" : "tries")!"), primaryButton: .default(Text("Quit"), action: {
+                    if self.data.askWhenUserGuessing {
+                        self.data.autoRedirect()
+                        self.data.askWhenUserGuessing = false
+                    } else {
                         self.data.isUserGuessing = false
-                    }), secondaryButton: .default(Text("Restart"), action: {
-                        self.data.resetUserGuessing()
-                    }))
+                    }
+                }), secondaryButton: .default(Text("Restart"), action: {
+                    self.data.resetUserGuessing()
+                    self.data.askWhenUserGuessing = false
+                }))
+            } else if self.data.askWhenUserGuessing {
+                return Alert(title: Text("You have an unfinished game"), primaryButton: .default(Text("Quit"), action: {
+                    self.data.autoRedirect()
+                    self.data.askWhenUserGuessing = false
+                }), secondaryButton: .default(Text("Resume"), action: {
+                    self.data.askWhenUserGuessing = false
+                }))
             } else {
                  return Alert(title: Text("Try \(self.data.userGuessedNumber > self.data.userGuessingCorrectNumber ? "lower" : "higher")"), message: Text("Trial: \(self.data.userGuessedTimes)"))
             }
@@ -121,16 +134,27 @@ struct AiGuessingView: View {
                         }
                         .animation(.default)
                         .frame(minWidth: geo.size.width, minHeight: geo.size.height)
+                        .alert(isPresented: self.$data.askWhenAiGuessing, content: {
+                            Alert(title: Text("You have an unfinished game"), primaryButton: .default(Text("Quit"), action: {
+                                self.data.autoRedirect()
+                            }), secondaryButton: .default(Text("Resume")))
+                        })
                     }
                 }
             }
         }.navigationBarTitle(Text("Let AI Guess"))
         .alert(isPresented: self.$data.hasAiWon, content: {
             Alert(title: Text("Hurray"), message: Text("AI gets the number (\(self.data.aiGuessedNumber)) in \(self.data.aiGuessedTimes) \(self.data.aiGuessedTimes == 1 ? "try" : "tries")!"), primaryButton: .default(Text("Quit"), action: {
+                if self.data.askWhenAiGuessing {
+                    self.data.autoRedirect()
+                    self.data.askWhenAiGuessing = false
+                } else {
                     self.data.isAiGuessing = false
-                }), secondaryButton: .default(Text("Restart"), action: {
-                    self.data.resetAiGuessing()
-                }))
+                }
+            }), secondaryButton: .default(Text("Restart"), action: {
+                self.data.resetAiGuessing()
+                self.data.askWhenAiGuessing = false
+            }))
         })
     }
 }

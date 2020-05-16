@@ -39,9 +39,11 @@ class GuessData: ObservableObject {
     @Published var isEditingUpperRange = false
     @Published var showCompareResult = false
     @Published var hasAiWon = false
+    @Published var askWhenUserGuessing = false
+    @Published var askWhenAiGuessing = false
     
     func wasUserGuessing() -> Bool {
-        return (self.isUserGuessing && self.userGuessedTimes > 0)
+        return (self.isUserGuessing && self.userGuessedNumber != -1)
     }
     
     func wasAiGuessing() -> Bool {
@@ -134,7 +136,7 @@ class GuessData: ObservableObject {
         self.isRandomizingBoolean = true
     }
     
-    func autoRelaunch() {
+    func autoRedirect() {
         switch self.quickAction {
         case "Let Me Guess":
             self.launchUserGuessing()

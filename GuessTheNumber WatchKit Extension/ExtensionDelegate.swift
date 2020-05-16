@@ -11,7 +11,16 @@ import WatchKit
 class ExtensionDelegate: NSObject, WKExtensionDelegate {
     
     func handleUserActivity(_ userInfo: [AnyHashable : Any]?) {
-        guessData.autoRelaunch()
+        if guessData.quickAction != "None" {
+            if guessData.wasUserGuessing() {
+                guessData.showCompareResult = true
+                guessData.askWhenUserGuessing = true
+            } else if guessData.wasAiGuessing() {
+                guessData.askWhenAiGuessing = true
+            } else {
+                guessData.autoRedirect()
+            }
+        }
     }
 
     func applicationDidFinishLaunching() {
