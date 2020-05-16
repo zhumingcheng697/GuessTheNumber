@@ -11,25 +11,16 @@ import WatchKit
 class ExtensionDelegate: NSObject, WKExtensionDelegate {
     
     func handleUserActivity(_ userInfo: [AnyHashable : Any]?) {
-        guessData.isUserGuessing = false
-        guessData.isAiGuessing = false
-        guessData.isInRandomizer = true
-        guessData.isRandomizingNumber = false
-        guessData.isRandomizingColor = false
-        guessData.isRandomizingBoolean = false
-        guessData.isInSettings = false
-        guessData.isEditingUpperRange = false
-        guessData.showCompareResult = false
-        guessData.hasAiWon = false
+        guessData.autoRelaunch()
     }
 
     func applicationDidFinishLaunching() {
         // Perform any final initialization of your application.
+        guessData.quickAction = UserDefaults.standard.string(forKey: "userSetQuickAction") ?? "None"
+        
         let restoredUpperRange = UserDefaults.standard.integer(forKey: "userSetUpperRange")
         if restoredUpperRange != 0 {
-            guessData.upperRange = restoredUpperRange
-            guessData.aiGuessingUpperLimit = restoredUpperRange
-            guessData.aiGuessedNumber = Int((0 + restoredUpperRange + Int.random(in: 0 ... 1)) / 2)
+            guessData.resetUpperRange(restoredUpperRange)
         }
         
         guessData.usingHex = UserDefaults.standard.bool(forKey: "userPrefersUsingHex")
