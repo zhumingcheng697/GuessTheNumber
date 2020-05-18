@@ -176,7 +176,7 @@ struct RandomizerView: View {
             
             NavigationLink(destination: RandomColorView(), isActive: self.$data.isRandomizingColor, label: {
                 HStack {
-                    Image(systemName: "eyedropper")
+                    Image(systemName: "paintbrush")
                         .imageScale(.large)
                     Text("Color")
                 }
