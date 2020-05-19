@@ -57,7 +57,7 @@ class GuessData: ObservableObject {
         self.randomNumber = Int.random(in: 0 ..< resetUpperRange + 1)
     }
     
-    func resetViews() {
+    func resetViews(resetAlerts: Bool = true) {
         self.isUserGuessing = false
         self.isAiGuessing = false
         self.isInRandomizer = false
@@ -67,8 +67,54 @@ class GuessData: ObservableObject {
         self.isInSettings = false
         self.isEditingQuickAction = false
         self.isEditingUpperRange = false
-        self.showCompareResult = false
-        self.hasAiWon = false
+        if resetAlerts {
+            self.showCompareResult = false
+            self.hasAiWon = false
+        }
+    }
+    
+    func storeUserGuessingStatus() {
+        UserDefaults.standard.set(true, forKey: "shouldRestoreUserGamingStatus")
+        UserDefaults.standard.set(self.userGuessingCorrectNumber, forKey: "userGuessingCorrectNumber")
+        UserDefaults.standard.set(self.userGuessedNumber, forKey: "userGuessedNumber")
+        UserDefaults.standard.set(self.userGuessedTimes, forKey: "userGuessedTimes")
+        UserDefaults.standard.set(self.showCompareResult, forKey: "showCompareResult")
+    }
+    
+    func storeAiGuessingStatus() {
+        UserDefaults.standard.set(true, forKey: "shouldRestoreAiGamingStatus")
+        UserDefaults.standard.set(self.aiGuessingLowerLimit, forKey: "aiGuessingLowerLimit")
+        UserDefaults.standard.set(self.aiGuessingUpperLimit, forKey: "aiGuessingUpperLimit")
+        UserDefaults.standard.set(self.aiGuessedNumber, forKey: "aiGuessedNumber")
+        UserDefaults.standard.set(self.aiGuessedTimes, forKey: "aiGuessedTimes")
+        UserDefaults.standard.set(self.hasAiWon, forKey: "hasAiWon")
+    }
+    
+    func tryRestoreUserGuessingStatus() {
+        if UserDefaults.standard.bool(forKey: "shouldRestoreUserGamingStatus") {
+            self.userGuessingCorrectNumber = UserDefaults.standard.integer(forKey: "userGuessingCorrectNumber")
+            self.userGuessedNumber = UserDefaults.standard.integer(forKey: "userGuessedNumber")
+            self.userGuessedTimes = UserDefaults.standard.integer(forKey: "userGuessedTimes")
+            self.showCompareResult = UserDefaults.standard.bool(forKey: "showCompareResult")
+            self.launchUserGuessing(reset: false)
+            for key in ["shouldRestoreUserGamingStatus", "userGuessingCorrectNumber", "userGuessedNumber", "userGuessedTimes", "showCompareResult"] {
+                UserDefaults.standard.removeObject(forKey: key)
+            }
+        }
+    }
+    
+    func tryRestoreAiGuessingStatus() {
+        if UserDefaults.standard.bool(forKey: "shouldRestoreAiGamingStatus") {
+            self.aiGuessingLowerLimit = UserDefaults.standard.integer(forKey: "aiGuessingLowerLimit")
+            self.aiGuessingUpperLimit = UserDefaults.standard.integer(forKey: "aiGuessingUpperLimit")
+            self.aiGuessedNumber = UserDefaults.standard.integer(forKey: "aiGuessedNumber")
+            self.aiGuessedTimes = UserDefaults.standard.integer(forKey: "aiGuessedTimes")
+            self.hasAiWon = UserDefaults.standard.bool(forKey: "hasAiWon")
+            self.launchAiGuessing(reset: false)
+            for key in ["shouldRestoreAiGamingStatus", "aiGuessingLowerLimit", "aiGuessingUpperLimit", "aiGuessedNumber", "aiGuessedTimes", "hasAiWon"] {
+                UserDefaults.standard.removeObject(forKey: key)
+            }
+        }
     }
     
     func resetUserGuessing() {
@@ -98,15 +144,19 @@ class GuessData: ObservableObject {
         self.randomDouble = Double.random(in: -10.0 ... 10.0)
     }
     
-    func launchUserGuessing() {
-        self.resetViews()
-        self.resetUserGuessing()
+    func launchUserGuessing(reset: Bool = true) {
+        self.resetViews(resetAlerts: reset)
+        if reset {
+            self.resetUserGuessing()
+        }
         self.isUserGuessing = true
     }
     
-    func launchAiGuessing() {
-        self.resetViews()
-        self.resetAiGuessing()
+    func launchAiGuessing(reset: Bool = true) {
+        self.resetViews(resetAlerts: reset)
+        if reset {
+            self.resetAiGuessing()
+        }
         self.isAiGuessing = true
     }
     
@@ -136,12 +186,12 @@ class GuessData: ObservableObject {
         self.isRandomizingBoolean = true
     }
     
-    func autoRedirect() {
+    func autoRedirect(reset: Bool = true) {
         switch self.quickAction {
         case "Let Me Guess":
-            self.launchUserGuessing()
+            self.launchUserGuessing(reset: reset)
         case "Let AI Guess":
-            self.launchAiGuessing()
+            self.launchAiGuessing(reset: reset)
         case "Randomizer":
             self.launchRandomizer()
         case "Random Number":

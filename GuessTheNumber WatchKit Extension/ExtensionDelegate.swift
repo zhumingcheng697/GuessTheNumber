@@ -7,15 +7,37 @@
 //
 
 import WatchKit
+import Intents
 
 class ExtensionDelegate: NSObject, WKExtensionDelegate {
     
+    func handle(_ userActivity: NSUserActivity) {
+        if let reopenTo = userActivity.userInfo?["reopenTo"] as? String {
+            switch reopenTo {
+            case "userGuessing":
+                guessData.tryRestoreUserGuessingStatus()
+            case "aiGuessing":
+                guessData.tryRestoreAiGuessingStatus()
+            case "randomizeNumber":
+                guessData.launchRandomNumber()
+            case "randomizeColor":
+                guessData.launchRandomColor()
+            case "randomizeBoolean":
+                guessData.launchRandomBoolean()
+            default:
+                break
+            }
+        }
+    }
+    
     func handleUserActivity(_ userInfo: [AnyHashable : Any]?) {
         if guessData.quickAction != "None" {
-            if guessData.wasUserGuessing() {
+            if UserDefaults.standard.bool(forKey: "shouldRestoreUserGamingStatus") {
+                guessData.tryRestoreUserGuessingStatus()
                 guessData.showCompareResult = true
                 guessData.askWhenUserGuessing = true
-            } else if guessData.wasAiGuessing() {
+            } else if UserDefaults.standard.bool(forKey: "shouldRestoreAiGamingStatus") {
+                guessData.tryRestoreAiGuessingStatus()
                 guessData.askWhenAiGuessing = true
             } else {
                 guessData.autoRedirect()
@@ -37,11 +59,72 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
 
     func applicationDidBecomeActive() {
         // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
+        
+        if UserDefaults.standard.bool(forKey: "relevantShortcutAdded") {
+            INRelevantShortcutStore.default.setRelevantShortcuts([], completionHandler: { error in
+                UserDefaults.standard.set(error != nil, forKey: "relevantShortcutAdded")
+            })
+        }
+        
+        guessData.tryRestoreUserGuessingStatus()
+        guessData.tryRestoreAiGuessingStatus()
     }
 
     func applicationWillResignActive() {
         // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
         // Use this method to pause ongoing tasks, disable timers, etc.
+        
+        let activity = NSUserActivity(activityType: "mccoyzhu.GuessTheNumber.Reopen")
+        var imageName: String
+        
+        if guessData.wasUserGuessing() {
+            activity.title = "Resume Game"
+            activity.userInfo = ["reopenTo" : "userGuessing"]
+            imageName = "person.crop.circle.fill"
+            guessData.storeUserGuessingStatus()
+        } else if guessData.wasAiGuessing() {
+            activity.title = "Resume Game"
+            activity.userInfo = ["reopenTo" : "aiGuessing"]
+            imageName = "gamecontroller.fill"
+            guessData.storeAiGuessingStatus()
+        } else if guessData.isInRandomizer && guessData.isRandomizingNumber {
+            activity.title = "Randomize Number"
+            activity.userInfo = ["reopenTo" : "randomizeNumber"]
+            imageName = "textformat.123"
+        } else if guessData.isInRandomizer && guessData.isRandomizingColor {
+            activity.title = "Randomize Color"
+            activity.userInfo = ["reopenTo" : "randomizeColor"]
+            imageName = "paintbrush"
+        } else if guessData.isInRandomizer && guessData.isRandomizingBoolean {
+            activity.title = "Randomize Boolean"
+            activity.userInfo = ["reopenTo" : "randomizeBoolean"]
+            imageName = "questionmark.circle"
+        } else {
+            if UserDefaults.standard.bool(forKey: "relevantShortcutAdded") {
+                INRelevantShortcutStore.default.setRelevantShortcuts([], completionHandler: { error in
+                    UserDefaults.standard.set(error != nil, forKey: "relevantShortcutAdded")
+                })
+            }
+            return
+        }
+        
+        activity.requiredUserInfoKeys = ["reopenTo"]
+        activity.isEligibleForPrediction = true
+        activity.persistentIdentifier = "\(activity.userInfo?["reopenTo"] ?? "Error")\(Int.random(in: 0 ..< 100))"
+        activity.becomeCurrent()
+        
+        let shortcut = INShortcut(userActivity: activity)
+        let relevantShortcut = INRelevantShortcut(shortcut: shortcut)
+        let cardTmpl = INDefaultCardTemplate(title: activity.title ?? "GuessTheNumber")
+        if let symbolImage = UIImage(systemName: imageName) {
+            cardTmpl.image = INImage(imageData: symbolImage.withTintColor(.white, renderingMode: .alwaysOriginal).pngData()!)
+        }
+        relevantShortcut.watchTemplate = cardTmpl
+        relevantShortcut.relevanceProviders = [INDateRelevanceProvider(start: Date().addingTimeInterval(0), end: Date().addingTimeInterval(60))]
+        
+        INRelevantShortcutStore.default.setRelevantShortcuts([relevantShortcut], completionHandler: { error in
+            UserDefaults.standard.set(error == nil, forKey: "relevantShortcutAdded")
+        })
     }
 
     func handle(_ backgroundTasks: Set<WKRefreshBackgroundTask>) {
