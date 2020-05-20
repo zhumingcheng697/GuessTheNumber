@@ -14,8 +14,6 @@
 		C23DA57A2468F50400EEE245 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C23DA5792468F50400EEE245 /* ContentView.swift */; };
 		C23DA57C2468F50400EEE245 /* HostingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C23DA57B2468F50400EEE245 /* HostingController.swift */; };
 		C23DA57E2468F50400EEE245 /* ExtensionDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C23DA57D2468F50400EEE245 /* ExtensionDelegate.swift */; };
-		C23DA5802468F50400EEE245 /* NotificationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C23DA57F2468F50400EEE245 /* NotificationController.swift */; };
-		C23DA5822468F50400EEE245 /* NotificationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C23DA5812468F50400EEE245 /* NotificationView.swift */; };
 		C23DA5842468F50400EEE245 /* ComplicationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C23DA5832468F50400EEE245 /* ComplicationController.swift */; };
 		C23DA5862468F50400EEE245 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C23DA5852468F50400EEE245 /* Assets.xcassets */; };
 		C23DA5892468F50400EEE245 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C23DA5882468F50400EEE245 /* Preview Assets.xcassets */; };
@@ -73,13 +71,10 @@
 		C23DA5792468F50400EEE245 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		C23DA57B2468F50400EEE245 /* HostingController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HostingController.swift; sourceTree = "<group>"; };
 		C23DA57D2468F50400EEE245 /* ExtensionDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExtensionDelegate.swift; sourceTree = "<group>"; };
-		C23DA57F2468F50400EEE245 /* NotificationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationController.swift; sourceTree = "<group>"; };
-		C23DA5812468F50400EEE245 /* NotificationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationView.swift; sourceTree = "<group>"; };
 		C23DA5832468F50400EEE245 /* ComplicationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComplicationController.swift; sourceTree = "<group>"; };
 		C23DA5852468F50400EEE245 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		C23DA5882468F50400EEE245 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		C23DA58A2468F50400EEE245 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		C23DA58B2468F50400EEE245 /* PushNotificationPayload.apns */ = {isa = PBXFileReference; lastKnownFileType = text; path = PushNotificationPayload.apns; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -128,12 +123,9 @@
 				C23DA5792468F50400EEE245 /* ContentView.swift */,
 				C23DA57B2468F50400EEE245 /* HostingController.swift */,
 				C23DA57D2468F50400EEE245 /* ExtensionDelegate.swift */,
-				C23DA57F2468F50400EEE245 /* NotificationController.swift */,
-				C23DA5812468F50400EEE245 /* NotificationView.swift */,
 				C23DA5832468F50400EEE245 /* ComplicationController.swift */,
 				C23DA5852468F50400EEE245 /* Assets.xcassets */,
 				C23DA58A2468F50400EEE245 /* Info.plist */,
-				C23DA58B2468F50400EEE245 /* PushNotificationPayload.apns */,
 				C23DA5872468F50400EEE245 /* Preview Content */,
 			);
 			path = "GuessTheNumber WatchKit Extension";
@@ -277,9 +269,7 @@
 			files = (
 				C23DA57C2468F50400EEE245 /* HostingController.swift in Sources */,
 				C23DA57A2468F50400EEE245 /* ContentView.swift in Sources */,
-				C23DA5802468F50400EEE245 /* NotificationController.swift in Sources */,
 				C23DA57E2468F50400EEE245 /* ExtensionDelegate.swift in Sources */,
-				C23DA5822468F50400EEE245 /* NotificationView.swift in Sources */,
 				C23DA5842468F50400EEE245 /* ComplicationController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
