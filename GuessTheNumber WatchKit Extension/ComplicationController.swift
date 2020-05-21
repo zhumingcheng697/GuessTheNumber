@@ -67,7 +67,7 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
             circularTmpl.imageProvider = CLKFullColorImageProvider(fullColorImage: UIImage(named: "Complication/Graphic Bezel")!, tintedImageProvider: CLKImageProvider(onePieceImage: UIImage(named: "Complication/Graphic Bezel")!))
             let tmpl = CLKComplicationTemplateGraphicBezelCircularText()
             tmpl.circularTemplate = circularTmpl
-            tmpl.textProvider = CLKSimpleTextProvider(text: "Guess The Number", shortText: "Guess")
+            tmpl.textProvider = CLKSimpleTextProvider(text: NSLocalizedString("Guess The Number", comment: ""), shortText:  NSLocalizedString("Guess", comment: ""))
             handler(tmpl)
             
         case CLKComplicationFamily.graphicCircular:
@@ -76,8 +76,9 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
             handler(tmpl)
             
         case CLKComplicationFamily.graphicCorner:
-            let tmpl = CLKComplicationTemplateGraphicCornerCircularImage()
-            tmpl.imageProvider = CLKFullColorImageProvider(fullColorImage: UIImage(named: "Graphic Corner")!, tintedImageProvider: CLKImageProvider(onePieceImage: UIImage(named: "Graphic Corner")!))
+            let tmpl = CLKComplicationTemplateGraphicCornerTextImage()
+            tmpl.imageProvider = CLKFullColorImageProvider(fullColorImage: UIImage(named: "Complication/Graphic Corner")!, tintedImageProvider: CLKImageProvider(onePieceImage: UIImage(named: "Complication/Graphic Corner")!))
+            tmpl.textProvider = CLKSimpleTextProvider(text: NSLocalizedString("Guess The Number", comment: ""), shortText:  NSLocalizedString("Guess", comment: ""))
             handler(tmpl)
             
         case CLKComplicationFamily.modularSmall:
@@ -93,13 +94,13 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
         case CLKComplicationFamily.utilitarianSmallFlat:
             let tmpl = CLKComplicationTemplateUtilitarianSmallFlat()
             tmpl.imageProvider = CLKImageProvider(onePieceImage: UIImage(named: "Utilitatian Flat")!)
-            tmpl.textProvider = CLKSimpleTextProvider(text: "Guess The Number", shortText: "Guess")
+            tmpl.textProvider = CLKSimpleTextProvider(text: NSLocalizedString("Guess The Number", comment: ""), shortText:  NSLocalizedString("Guess", comment: ""))
             handler(tmpl)
             
         case CLKComplicationFamily.utilitarianLarge:
             let tmpl = CLKComplicationTemplateUtilitarianLargeFlat()
             tmpl.imageProvider = CLKImageProvider(onePieceImage: UIImage(named: "Utilitatian Flat")!)
-            tmpl.textProvider = CLKSimpleTextProvider(text: "Guess The Number", shortText: "Guess")
+            tmpl.textProvider = CLKSimpleTextProvider(text: NSLocalizedString("Guess The Number", comment: ""), shortText:  NSLocalizedString("Guess", comment: ""))
             handler(tmpl)
             
         default:

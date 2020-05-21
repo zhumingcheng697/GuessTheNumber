@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		C22FAD702474FE51007712A9 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = C22FAD722474FE51007712A9 /* InfoPlist.strings */; };
 		C23DA5662468F50300EEE245 /* GuessTheNumber WatchKit App.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = C23DA5652468F50300EEE245 /* GuessTheNumber WatchKit App.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		C23DA56C2468F50300EEE245 /* Interface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C23DA56A2468F50300EEE245 /* Interface.storyboard */; };
 		C23DA56E2468F50400EEE245 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C23DA56D2468F50400EEE245 /* Assets.xcassets */; };
@@ -17,6 +18,8 @@
 		C23DA5842468F50400EEE245 /* ComplicationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C23DA5832468F50400EEE245 /* ComplicationController.swift */; };
 		C23DA5862468F50400EEE245 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C23DA5852468F50400EEE245 /* Assets.xcassets */; };
 		C23DA5892468F50400EEE245 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C23DA5882468F50400EEE245 /* Preview Assets.xcassets */; };
+		C285E898247640B800BCC9A8 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = C285E896247640B800BCC9A8 /* Localizable.strings */; };
+		C285E8A0247640F200BCC9A8 /* Localizable.stringsdict in Resources */ = {isa = PBXBuildFile; fileRef = C285E89E247640F200BCC9A8 /* Localizable.stringsdict */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -62,6 +65,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		C22FAD712474FE51007712A9 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		C23DA5612468F50300EEE245 /* GuessTheNumber.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GuessTheNumber.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C23DA5652468F50300EEE245 /* GuessTheNumber WatchKit App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "GuessTheNumber WatchKit App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		C23DA56B2468F50300EEE245 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Interface.storyboard; sourceTree = "<group>"; };
@@ -75,6 +79,11 @@
 		C23DA5852468F50400EEE245 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		C23DA5882468F50400EEE245 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		C23DA58A2468F50400EEE245 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		C285E897247640B800BCC9A8 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
+		C285E899247640C100BCC9A8 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
+		C285E89F247640F200BCC9A8 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.stringsdict; name = en; path = en.lproj/Localizable.stringsdict; sourceTree = "<group>"; };
+		C285E8A1247640FB00BCC9A8 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.stringsdict; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.stringsdict"; sourceTree = "<group>"; };
+		C2F0A7C62475FB4D00504733 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -113,6 +122,7 @@
 				C23DA56A2468F50300EEE245 /* Interface.storyboard */,
 				C23DA56D2468F50400EEE245 /* Assets.xcassets */,
 				C23DA56F2468F50400EEE245 /* Info.plist */,
+				C22FAD722474FE51007712A9 /* InfoPlist.strings */,
 			);
 			path = "GuessTheNumber WatchKit App";
 			sourceTree = "<group>";
@@ -124,6 +134,8 @@
 				C23DA57B2468F50400EEE245 /* HostingController.swift */,
 				C23DA57D2468F50400EEE245 /* ExtensionDelegate.swift */,
 				C23DA5832468F50400EEE245 /* ComplicationController.swift */,
+				C285E896247640B800BCC9A8 /* Localizable.strings */,
+				C285E89E247640F200BCC9A8 /* Localizable.stringsdict */,
 				C23DA5852468F50400EEE245 /* Assets.xcassets */,
 				C23DA58A2468F50400EEE245 /* Info.plist */,
 				C23DA5872468F50400EEE245 /* Preview Content */,
@@ -221,6 +233,7 @@
 			knownRegions = (
 				en,
 				Base,
+				"zh-Hans",
 			);
 			mainGroup = C23DA55A2468F50300EEE245;
 			productRefGroup = C23DA5622468F50300EEE245 /* Products */;
@@ -247,6 +260,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C23DA56E2468F50400EEE245 /* Assets.xcassets in Resources */,
+				C22FAD702474FE51007712A9 /* InfoPlist.strings in Resources */,
 				C23DA56C2468F50300EEE245 /* Interface.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -256,6 +270,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				C23DA5892468F50400EEE245 /* Preview Assets.xcassets in Resources */,
+				C285E8A0247640F200BCC9A8 /* Localizable.stringsdict in Resources */,
+				C285E898247640B800BCC9A8 /* Localizable.strings in Resources */,
 				C23DA5862468F50400EEE245 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -290,12 +306,39 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
+		C22FAD722474FE51007712A9 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				C22FAD712474FE51007712A9 /* en */,
+				C2F0A7C62475FB4D00504733 /* zh-Hans */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
 		C23DA56A2468F50300EEE245 /* Interface.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
 				C23DA56B2468F50300EEE245 /* Base */,
 			);
 			name = Interface.storyboard;
+			sourceTree = "<group>";
+		};
+		C285E896247640B800BCC9A8 /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				C285E897247640B800BCC9A8 /* en */,
+				C285E899247640C100BCC9A8 /* zh-Hans */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
+		C285E89E247640F200BCC9A8 /* Localizable.stringsdict */ = {
+			isa = PBXVariantGroup;
+			children = (
+				C285E89F247640F200BCC9A8 /* en */,
+				C285E8A1247640FB00BCC9A8 /* zh-Hans */,
+			);
+			name = Localizable.stringsdict;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
@@ -305,6 +348,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
@@ -364,6 +408,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";

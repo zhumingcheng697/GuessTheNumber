@@ -8,6 +8,12 @@
 
 import SwiftUI
 
+func formatNumber(_ number: Int) -> String {
+    let formatter = NumberFormatter()
+    formatter.numberStyle = .decimal
+    return formatter.string(from: number as NSNumber)!
+}
+
 struct UserGuessingView: View {
     @EnvironmentObject var data: GuessData
     
@@ -16,7 +22,7 @@ struct UserGuessingView: View {
             if self.data.userGuessedNumber == -1 {
                 Spacer()
                 
-                Text("Guess a number between 0 and \(Int(self.data.upperRange))")
+                Text("Guess a number between 0 and \(formatNumber(self.data.upperRange))")
                     .font(.headline)
                     .multilineTextAlignment(.center)
 
@@ -31,8 +37,8 @@ struct UserGuessingView: View {
                 })
             } else {
                 Picker(selection: self.$data.userGuessedNumber, label: EmptyView()) {
-                    ForEach(0 ..< Int(self.data.upperRange) + 1) { index in
-                        Text("\(index)")
+                    ForEach(0 ..< self.data.upperRange + 1) { index in
+                        Text(formatNumber(index))
                             .font(.system(size: 22, weight: .medium, design: .rounded))
                     }
                 }
@@ -47,7 +53,7 @@ struct UserGuessingView: View {
         }.navigationBarTitle(Text("Let Me Guess"))
         .alert(isPresented: self.$data.showCompareResult, content: {
             if self.data.userGuessedNumber == self.data.userGuessingCorrectNumber {
-                return Alert(title: Text("Yay"), message: Text("You get the number (\(self.data.userGuessingCorrectNumber)) in \(self.data.userGuessedTimes) \(self.data.userGuessedTimes == 1 ? "try" : "tries")!"), primaryButton: .default(Text("Quit"), action: {
+                return Alert(title: Text("Yay"), message: Text("You get the number (\(formatNumber(self.data.userGuessingCorrectNumber))) in \(formatNumber(self.data.userGuessedTimes)) \(self.data.userGuessedTimes, specifier: "%d")!"), primaryButton: .default(Text("Quit"), action: {
                     if self.data.askWhenUserGuessing {
                         self.data.autoRedirect()
                         self.data.askWhenUserGuessing = false
@@ -66,7 +72,7 @@ struct UserGuessingView: View {
                     self.data.askWhenUserGuessing = false
                 }))
             } else {
-                 return Alert(title: Text("Try \(self.data.userGuessedNumber > self.data.userGuessingCorrectNumber ? "lower" : "higher")"), message: Text("Trial: \(self.data.userGuessedTimes)"))
+                 return Alert(title: Text(self.data.userGuessedNumber > self.data.userGuessingCorrectNumber ? "Try lower" : "Try higher"), message: Text("Trial: \(formatNumber(self.data.userGuessedTimes))"))
             }
         })
     }
@@ -80,7 +86,7 @@ struct AiGuessingView: View {
             if self.data.aiGuessedTimes == 0 {
                 Spacer()
                 
-                Text("Choose a number between 0 and \(Int(self.data.upperRange))")
+                Text("Choose a number between 0 and \(formatNumber(self.data.upperRange))")
                     .font(.headline)
                     .multilineTextAlignment(.center)
 
@@ -101,7 +107,7 @@ struct AiGuessingView: View {
                                 Spacer()
                             }
                             
-                            Text(self.data.aiGuessingLowerLimit == self.data.aiGuessingUpperLimit ? "\(String(repeating: " ", count: max(8 - String(self.data.aiGuessedNumber).count, 0)))It is \(self.data.aiGuessedNumber)!\(String(repeating: " ", count: max(8 - String(self.data.aiGuessedNumber).count, 0)))" : "\(String(repeating: " ", count: max(8 - String(self.data.aiGuessedNumber).count, 0)))Is it \(self.data.aiGuessedNumber)?\(String(repeating: " ", count: max(8 - String(self.data.aiGuessedNumber).count, 0)))")
+                            Text(self.data.aiGuessingLowerLimit == self.data.aiGuessingUpperLimit ? "It is \(formatNumber(self.data.aiGuessedNumber))!" : "Is it \(formatNumber(self.data.aiGuessedNumber))?")
 
                             Spacer()
                             
@@ -144,7 +150,7 @@ struct AiGuessingView: View {
             }
         }.navigationBarTitle(Text("Let AI Guess"))
         .alert(isPresented: self.$data.hasAiWon, content: {
-            Alert(title: Text("Hurray"), message: Text("AI gets the number (\(self.data.aiGuessedNumber)) in \(self.data.aiGuessedTimes) \(self.data.aiGuessedTimes == 1 ? "try" : "tries")!"), primaryButton: .default(Text("Quit"), action: {
+            Alert(title: Text("Hurray"), message: Text("AI gets the number (\(formatNumber(self.data.aiGuessedNumber))) in \(formatNumber(self.data.aiGuessedTimes)) \(self.data.aiGuessedTimes, specifier: "%d")!"), primaryButton: .default(Text("Quit"), action: {
                 if self.data.askWhenAiGuessing {
                     self.data.autoRedirect()
                     self.data.askWhenAiGuessing = false
@@ -204,7 +210,7 @@ struct RandomNumberView: View {
         VStack {
             Spacer()
             
-            Text("\(self.data.randomNumber)")
+            Text(formatNumber(self.data.randomNumber))
                 .font(.system(.largeTitle, design: .rounded))
             
             Spacer()
@@ -261,11 +267,11 @@ struct RandomBooleanView: View {
             Spacer()
             
             HStack {
-                Text("\(self.data.randomDouble >= 0 ? "True" : "False")")
+                Text(self.data.randomDouble >= 0 ? "True" : "False")
                     .font(.system(.largeTitle, design: .rounded))
                     .foregroundColor(self.data.randomDouble >= 0 ? .green : .red)
                 
-                Image(systemName: "\(self.data.randomDouble >= 0 ? "checkmark" : "xmark")")
+                Image(systemName: self.data.randomDouble >= 0 ? "checkmark" : "xmark")
                     .font(.system(.largeTitle, design: .rounded))
                     .foregroundColor(self.data.randomDouble >= 0 ? .green : .red)
             }
@@ -290,7 +296,7 @@ struct SettingsView: View {
                 VStack(alignment: .leading) {
                     Text("Quick Action")
                     
-                    Text("\(self.data.quickAction)")
+                    Text(LocalizedStringKey(self.data.quickAction))
                         .font(.caption)
                         .foregroundColor(.gray)
                 }
@@ -303,7 +309,7 @@ struct SettingsView: View {
                     
                     Spacer()
                     
-                    Text("\(String(repeating: "   ", count: max(3 - String(self.data.upperRange).count, 0)))\(self.data.upperRange)")
+                    Text(formatNumber(self.data.upperRange))
                         .foregroundColor(.gray)
                 }
             })
@@ -331,7 +337,7 @@ struct ShortcutActionSettingsView: View {
         VStack {
             Picker(selection: self.$pendingQuickAction, label: EmptyView()) {
                 ForEach(["None", "Let Me Guess", "Let AI Guess", "Randomizer", "Random Number", "Random Color", "Random Boolean"], id: \.self) { menu in
-                    Text("\(menu)")
+                    Text(LocalizedStringKey(menu)).tag(menu)
                         .font(.system(Font.TextStyle.headline, design: Font.Design.rounded))
                     .lineLimit(nil)
                 }
@@ -356,7 +362,7 @@ struct UpperRangeSettingsView: View {
         VStack {
             Picker(selection: $pendingUpperRange, label: EmptyView()) {
                 ForEach([9, 99, 255, 999, 1023], id: \.self) { upper in
-                    Text("\(upper)")
+                    Text(formatNumber(upper))
                         .font(.system(size: 22, weight: .medium, design: .rounded))
                 }
             }
@@ -425,5 +431,6 @@ struct ContentView: View {
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         ContentView().environmentObject(guessData)
+            .environment(\.locale, Locale.init(identifier: "zh-Hans"))
     }
 }

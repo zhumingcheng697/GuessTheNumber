@@ -1,0 +1,102 @@
+/* 
+  Localizalbe.strings
+  GuessTheNumber
+
+  Created by McCoy Zhu on 5/19/20.
+  Copyright © 2020 McCoy Zhu. All rights reserved.
+*/
+
+
+/* Complication Controller */
+
+"Guess The Number" = "Guess The Number";
+
+"Guess" = "Guess";
+
+/* Content View - User Guessing */
+
+"Guess a number between 0 and %@" = "Guess a number between 0 and %@";
+
+"Comfirm" = "Comfirm";
+
+"Yay" = "Yay";
+
+"Try higher" = "Try higher";
+
+"Try lower" = "Try lower";
+
+"Trial: %@" = "Trial: %@";
+
+/* Content View - AI Guessing */
+
+"Choose a number between 0 and %@" = "Choose a number between 0 and %@";
+
+"It is %@!" = "     It is %@!     ";
+
+"Is it %@?" = "     Is it %@?     ";
+
+"Correct" = "Correct";
+
+"Too High" = "Too High";
+
+"Too Low" = "Too Low";
+
+"Hurray" = "Hurray";
+
+/* Content View - User Guessing & AI Guessing */
+
+"Ready" = "Ready";
+
+"You have an unfinished game" = "You have an unfinished game";
+
+"Quit" = "Quit";
+
+"Resume" = "Resume";
+
+"Restart" = "Restart";
+
+/* Content View - Randomizer */
+
+"Number" = "Number";
+
+"Color" = "Color";
+
+"Boolean" = "Boolean";
+
+"Randomize" = "Randomize";
+
+/* Content View - Boolean Randomizer */
+
+"True" = "True";
+
+"False" = "False";
+
+/* Content View - Settings */
+
+"Quick Action" = "Quick Action";
+
+"Upper Range for Numbers" = "Upper Range for Numbers";
+
+"Upper Range" = "Upper Range";
+
+"Use Hex Value for Colors" = "Use Hex Value for Colors";
+
+"None" = "None";
+
+"Done" = "Done";
+
+/* Content View - Menus */
+
+"Let Me Guess" = "Let Me Guess";
+
+"Let AI Guess" = "Let AI Guess";
+
+"Randomizer" = "Randomizer";
+
+"Random Number" = "Random Number";
+
+"Random Color" = "Random Color";
+
+"Random Boolean" = "Random Boolean";
+
+"Settings" = "Settings";
