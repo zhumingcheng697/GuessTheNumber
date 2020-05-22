@@ -17,7 +17,7 @@
 
 "Guess a number between 0 and %@" = "Guess a number between 0 and %@";
 
-"Comfirm" = "Comfirm";
+"Confirm" = "Confirm";
 
 "Yay" = "Yay";
 
@@ -100,3 +100,13 @@
 "Random Boolean" = "Random Boolean";
 
 "Settings" = "Settings";
+
+/* Shortcuts */
+
+"Resume Game" = "Resume Game";
+
+"Randomize Number" = "Randomize Number";
+
+"Randomize Color" = "Randomize Color";
+
+"Randomize Boolean" = "Randomize Boolean";

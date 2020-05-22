@@ -17,7 +17,7 @@
 
 "Guess a number between 0 and %@" = "在0到%@里猜一个数字";
 
-"Comfirm" = "确认";
+"Confirm" = "确认";
 
 "Yay" = "耶";
 
@@ -100,3 +100,13 @@
 "Random Boolean" = "随机布尔值";
 
 "Settings" = "设置";
+
+/* Shortcuts */
+
+"Resume Game" = "继续游戏";
+
+"Randomize Number" = "随机生成数字";
+
+"Randomize Color" = "随机生成颜色";
+
+"Randomize Boolean" = "随机生成布尔值";

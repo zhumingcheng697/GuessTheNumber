@@ -47,7 +47,7 @@ struct UserGuessingView: View {
                     self.data.showCompareResult = true
                     self.data.userGuessedTimes += 1
                 }, label: {
-                    Text("Comfirm")
+                    Text("Confirm")
                 })
             }
         }.navigationBarTitle(Text("Let Me Guess"))
@@ -431,6 +431,5 @@ struct ContentView: View {
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         ContentView().environmentObject(guessData)
-            .environment(\.locale, Locale.init(identifier: "zh-Hans"))
     }
 }
