@@ -61,15 +61,15 @@
 
 "Color" = "颜色";
 
-"Boolean" = "布尔值";
+"Boolean" = "Булев";
 
-"Randomize" = "生成";
+"Randomize" = "Генерировать";
 
 /* Content View - Boolean Randomizer */
 
-"True" = "是";
+"True" = "Да";
 
-"False" = "否";
+"False" = "Нет";
 
 /* Content View - Settings */
 

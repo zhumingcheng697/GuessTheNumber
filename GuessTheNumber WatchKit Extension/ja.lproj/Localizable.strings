@@ -61,15 +61,15 @@
 
 "Color" = "颜色";
 
-"Boolean" = "布尔值";
+"Boolean" = "ブール";
 
-"Randomize" = "生成";
+"Randomize" = "生成する";
 
 /* Content View - Boolean Randomizer */
 
-"True" = "是";
+"True" = "はい";
 
-"False" = "否";
+"False" = "いいえ";
 
 /* Content View - Settings */
 
