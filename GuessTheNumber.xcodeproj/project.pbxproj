@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		C22FAD702474FE51007712A9 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = C22FAD722474FE51007712A9 /* InfoPlist.strings */; };
 		C23DA5662468F50300EEE245 /* GuessTheNumber WatchKit App.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = C23DA5652468F50300EEE245 /* GuessTheNumber WatchKit App.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		C23DA56C2468F50300EEE245 /* Interface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C23DA56A2468F50300EEE245 /* Interface.storyboard */; };
 		C23DA56E2468F50400EEE245 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C23DA56D2468F50400EEE245 /* Assets.xcassets */; };
@@ -18,8 +17,9 @@
 		C23DA5842468F50400EEE245 /* ComplicationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C23DA5832468F50400EEE245 /* ComplicationController.swift */; };
 		C23DA5862468F50400EEE245 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C23DA5852468F50400EEE245 /* Assets.xcassets */; };
 		C23DA5892468F50400EEE245 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C23DA5882468F50400EEE245 /* Preview Assets.xcassets */; };
-		C285E898247640B800BCC9A8 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = C285E896247640B800BCC9A8 /* Localizable.strings */; };
-		C285E8A0247640F200BCC9A8 /* Localizable.stringsdict in Resources */ = {isa = PBXBuildFile; fileRef = C285E89E247640F200BCC9A8 /* Localizable.stringsdict */; };
+		C2820E702478FF5A0027B6EE /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = C2820E6E2478FF5A0027B6EE /* InfoPlist.strings */; };
+		C2820E772478FF9A0027B6EE /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = C2820E752478FF9A0027B6EE /* Localizable.strings */; };
+		C2820E7E2478FFCF0027B6EE /* Localizable.stringsdict in Resources */ = {isa = PBXBuildFile; fileRef = C2820E7C2478FFCF0027B6EE /* Localizable.stringsdict */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -65,7 +65,6 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		C22FAD712474FE51007712A9 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		C23DA5612468F50300EEE245 /* GuessTheNumber.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GuessTheNumber.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C23DA5652468F50300EEE245 /* GuessTheNumber WatchKit App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "GuessTheNumber WatchKit App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		C23DA56B2468F50300EEE245 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Interface.storyboard; sourceTree = "<group>"; };
@@ -79,17 +78,21 @@
 		C23DA5852468F50400EEE245 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		C23DA5882468F50400EEE245 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		C23DA58A2468F50400EEE245 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		C2820E652477350E0027B6EE /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		C2820E662477350E0027B6EE /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/Localizable.strings; sourceTree = "<group>"; };
-		C2820E672477350E0027B6EE /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.stringsdict; name = ja; path = ja.lproj/Localizable.stringsdict; sourceTree = "<group>"; };
-		C2820E682477351E0027B6EE /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		C2820E692477351E0027B6EE /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/Localizable.strings; sourceTree = "<group>"; };
-		C2820E6A2477351E0027B6EE /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.stringsdict; name = ru; path = ru.lproj/Localizable.stringsdict; sourceTree = "<group>"; };
-		C285E897247640B800BCC9A8 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
-		C285E899247640C100BCC9A8 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
-		C285E89F247640F200BCC9A8 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.stringsdict; name = en; path = en.lproj/Localizable.stringsdict; sourceTree = "<group>"; };
-		C285E8A1247640FB00BCC9A8 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.stringsdict; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.stringsdict"; sourceTree = "<group>"; };
-		C2F0A7C62475FB4D00504733 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
+		C2820E6F2478FF5A0027B6EE /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		C2820E712478FF630027B6EE /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
+		C2820E722478FF6C0027B6EE /* zh-Hant */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
+		C2820E732478FF7D0027B6EE /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		C2820E742478FF850027B6EE /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		C2820E762478FF9A0027B6EE /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
+		C2820E782478FFA40027B6EE /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
+		C2820E792478FFAF0027B6EE /* zh-Hant */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/Localizable.strings"; sourceTree = "<group>"; };
+		C2820E7A2478FFB70027B6EE /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/Localizable.strings; sourceTree = "<group>"; };
+		C2820E7B2478FFBF0027B6EE /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/Localizable.strings; sourceTree = "<group>"; };
+		C2820E7D2478FFCF0027B6EE /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.stringsdict; name = en; path = en.lproj/Localizable.stringsdict; sourceTree = "<group>"; };
+		C2820E7F2478FFDA0027B6EE /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.stringsdict; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.stringsdict"; sourceTree = "<group>"; };
+		C2820E802478FFE30027B6EE /* zh-Hant */ = {isa = PBXFileReference; lastKnownFileType = text.plist.stringsdict; name = "zh-Hant"; path = "zh-Hant.lproj/Localizable.stringsdict"; sourceTree = "<group>"; };
+		C2820E812478FFEC0027B6EE /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.stringsdict; name = ja; path = ja.lproj/Localizable.stringsdict; sourceTree = "<group>"; };
+		C2820E822478FFF40027B6EE /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.stringsdict; name = ru; path = ru.lproj/Localizable.stringsdict; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -128,7 +131,7 @@
 				C23DA56A2468F50300EEE245 /* Interface.storyboard */,
 				C23DA56D2468F50400EEE245 /* Assets.xcassets */,
 				C23DA56F2468F50400EEE245 /* Info.plist */,
-				C22FAD722474FE51007712A9 /* InfoPlist.strings */,
+				C2820E6E2478FF5A0027B6EE /* InfoPlist.strings */,
 			);
 			path = "GuessTheNumber WatchKit App";
 			sourceTree = "<group>";
@@ -140,8 +143,8 @@
 				C23DA57B2468F50400EEE245 /* HostingController.swift */,
 				C23DA57D2468F50400EEE245 /* ExtensionDelegate.swift */,
 				C23DA5832468F50400EEE245 /* ComplicationController.swift */,
-				C285E896247640B800BCC9A8 /* Localizable.strings */,
-				C285E89E247640F200BCC9A8 /* Localizable.stringsdict */,
+				C2820E752478FF9A0027B6EE /* Localizable.strings */,
+				C2820E7C2478FFCF0027B6EE /* Localizable.stringsdict */,
 				C23DA5852468F50400EEE245 /* Assets.xcassets */,
 				C23DA58A2468F50400EEE245 /* Info.plist */,
 				C23DA5872468F50400EEE245 /* Preview Content */,
@@ -242,6 +245,7 @@
 				"zh-Hans",
 				ja,
 				ru,
+				"zh-Hant",
 			);
 			mainGroup = C23DA55A2468F50300EEE245;
 			productRefGroup = C23DA5622468F50300EEE245 /* Products */;
@@ -268,7 +272,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C23DA56E2468F50400EEE245 /* Assets.xcassets in Resources */,
-				C22FAD702474FE51007712A9 /* InfoPlist.strings in Resources */,
+				C2820E702478FF5A0027B6EE /* InfoPlist.strings in Resources */,
 				C23DA56C2468F50300EEE245 /* Interface.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -278,8 +282,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				C23DA5892468F50400EEE245 /* Preview Assets.xcassets in Resources */,
-				C285E8A0247640F200BCC9A8 /* Localizable.stringsdict in Resources */,
-				C285E898247640B800BCC9A8 /* Localizable.strings in Resources */,
+				C2820E7E2478FFCF0027B6EE /* Localizable.stringsdict in Resources */,
+				C2820E772478FF9A0027B6EE /* Localizable.strings in Resources */,
 				C23DA5862468F50400EEE245 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -314,17 +318,6 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
-		C22FAD722474FE51007712A9 /* InfoPlist.strings */ = {
-			isa = PBXVariantGroup;
-			children = (
-				C22FAD712474FE51007712A9 /* en */,
-				C2F0A7C62475FB4D00504733 /* zh-Hans */,
-				C2820E652477350E0027B6EE /* ja */,
-				C2820E682477351E0027B6EE /* ru */,
-			);
-			name = InfoPlist.strings;
-			sourceTree = "<group>";
-		};
 		C23DA56A2468F50300EEE245 /* Interface.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -333,24 +326,38 @@
 			name = Interface.storyboard;
 			sourceTree = "<group>";
 		};
-		C285E896247640B800BCC9A8 /* Localizable.strings */ = {
+		C2820E6E2478FF5A0027B6EE /* InfoPlist.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
-				C285E897247640B800BCC9A8 /* en */,
-				C285E899247640C100BCC9A8 /* zh-Hans */,
-				C2820E662477350E0027B6EE /* ja */,
-				C2820E692477351E0027B6EE /* ru */,
+				C2820E6F2478FF5A0027B6EE /* en */,
+				C2820E712478FF630027B6EE /* zh-Hans */,
+				C2820E722478FF6C0027B6EE /* zh-Hant */,
+				C2820E732478FF7D0027B6EE /* ja */,
+				C2820E742478FF850027B6EE /* ru */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		C2820E752478FF9A0027B6EE /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				C2820E762478FF9A0027B6EE /* en */,
+				C2820E782478FFA40027B6EE /* zh-Hans */,
+				C2820E792478FFAF0027B6EE /* zh-Hant */,
+				C2820E7A2478FFB70027B6EE /* ja */,
+				C2820E7B2478FFBF0027B6EE /* ru */,
 			);
 			name = Localizable.strings;
 			sourceTree = "<group>";
 		};
-		C285E89E247640F200BCC9A8 /* Localizable.stringsdict */ = {
+		C2820E7C2478FFCF0027B6EE /* Localizable.stringsdict */ = {
 			isa = PBXVariantGroup;
 			children = (
-				C285E89F247640F200BCC9A8 /* en */,
-				C285E8A1247640FB00BCC9A8 /* zh-Hans */,
-				C2820E672477350E0027B6EE /* ja */,
-				C2820E6A2477351E0027B6EE /* ru */,
+				C2820E7D2478FFCF0027B6EE /* en */,
+				C2820E7F2478FFDA0027B6EE /* zh-Hans */,
+				C2820E802478FFE30027B6EE /* zh-Hant */,
+				C2820E812478FFEC0027B6EE /* ja */,
+				C2820E822478FFF40027B6EE /* ru */,
 			);
 			name = Localizable.stringsdict;
 			sourceTree = "<group>";
@@ -486,7 +493,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.3;
+				MARKETING_VERSION = 1.4;
 				PRODUCT_BUNDLE_IDENTIFIER = mccoyzhu.GuessTheNumber.watchkitapp.watchkitextension;
 				PRODUCT_NAME = "${TARGET_NAME}";
 				SDKROOT = watchos;
@@ -511,7 +518,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.3;
+				MARKETING_VERSION = 1.4;
 				PRODUCT_BUNDLE_IDENTIFIER = mccoyzhu.GuessTheNumber.watchkitapp.watchkitextension;
 				PRODUCT_NAME = "${TARGET_NAME}";
 				SDKROOT = watchos;
@@ -531,7 +538,7 @@
 				DEVELOPMENT_TEAM = MGM7CAKZL4;
 				IBSC_MODULE = GuessTheNumber_WatchKit_Extension;
 				INFOPLIST_FILE = "GuessTheNumber WatchKit App/Info.plist";
-				MARKETING_VERSION = 1.3;
+				MARKETING_VERSION = 1.4;
 				PRODUCT_BUNDLE_IDENTIFIER = mccoyzhu.GuessTheNumber.watchkitapp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = watchos;
@@ -551,7 +558,7 @@
 				DEVELOPMENT_TEAM = MGM7CAKZL4;
 				IBSC_MODULE = GuessTheNumber_WatchKit_Extension;
 				INFOPLIST_FILE = "GuessTheNumber WatchKit App/Info.plist";
-				MARKETING_VERSION = 1.3;
+				MARKETING_VERSION = 1.4;
 				PRODUCT_BUNDLE_IDENTIFIER = mccoyzhu.GuessTheNumber.watchkitapp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = watchos;
@@ -568,7 +575,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = MGM7CAKZL4;
-				MARKETING_VERSION = 1.3;
+				MARKETING_VERSION = 1.4;
 				PRODUCT_BUNDLE_IDENTIFIER = mccoyzhu.GuessTheNumber;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
@@ -581,7 +588,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = MGM7CAKZL4;
-				MARKETING_VERSION = 1.3;
+				MARKETING_VERSION = 1.4;
 				PRODUCT_BUNDLE_IDENTIFIER = mccoyzhu.GuessTheNumber;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
