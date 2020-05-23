@@ -33,12 +33,10 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
     
     func handleUserActivity(_ userInfo: [AnyHashable : Any]?) {
         if guessData.quickAction != "None" {
-            if UserDefaults.standard.bool(forKey: "shouldRestoreUserGamingStatus") {
-                guessData.tryRestoreUserGuessingStatus()
+            if guessData.tryRestoreUserGuessingStatus() {
                 guessData.showCompareResult = true
                 guessData.askWhenUserGuessing = true
-            } else if UserDefaults.standard.bool(forKey: "shouldRestoreAiGamingStatus") {
-                guessData.tryRestoreAiGuessingStatus()
+            } else if guessData.tryRestoreAiGuessingStatus() {
                 guessData.askWhenAiGuessing = true
             } else {
                 guessData.autoRedirect()

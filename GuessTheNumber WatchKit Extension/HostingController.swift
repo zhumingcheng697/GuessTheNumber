@@ -90,7 +90,7 @@ class GuessData: ObservableObject {
         UserDefaults.standard.set(self.hasAiWon, forKey: "hasAiWon")
     }
     
-    func tryRestoreUserGuessingStatus() {
+    @discardableResult func tryRestoreUserGuessingStatus() -> Bool {
         if UserDefaults.standard.bool(forKey: "shouldRestoreUserGamingStatus") {
             self.userGuessingCorrectNumber = UserDefaults.standard.integer(forKey: "userGuessingCorrectNumber")
             self.userGuessedNumber = UserDefaults.standard.integer(forKey: "userGuessedNumber")
@@ -100,10 +100,12 @@ class GuessData: ObservableObject {
             for key in ["shouldRestoreUserGamingStatus", "userGuessingCorrectNumber", "userGuessedNumber", "userGuessedTimes", "showCompareResult"] {
                 UserDefaults.standard.removeObject(forKey: key)
             }
+            return true
         }
+        return false
     }
     
-    func tryRestoreAiGuessingStatus() {
+    @discardableResult func tryRestoreAiGuessingStatus() -> Bool {
         if UserDefaults.standard.bool(forKey: "shouldRestoreAiGamingStatus") {
             self.aiGuessingLowerLimit = UserDefaults.standard.integer(forKey: "aiGuessingLowerLimit")
             self.aiGuessingUpperLimit = UserDefaults.standard.integer(forKey: "aiGuessingUpperLimit")
@@ -114,7 +116,9 @@ class GuessData: ObservableObject {
             for key in ["shouldRestoreAiGamingStatus", "aiGuessingLowerLimit", "aiGuessingUpperLimit", "aiGuessedNumber", "aiGuessedTimes", "hasAiWon"] {
                 UserDefaults.standard.removeObject(forKey: key)
             }
+            return true
         }
+        return false
     }
     
     func resetUserGuessing() {
