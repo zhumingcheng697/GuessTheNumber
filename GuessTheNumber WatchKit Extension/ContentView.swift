@@ -331,12 +331,12 @@ struct SettingsView: View {
 
 struct QuickActionSettingsView: View {
     @EnvironmentObject var data: GuessData
-    @State var pendingQuickAction: QuickAction
+    @State var pendingQuickAction: GuessData.QuickAction
     
     var body: some View {
         VStack {
             Picker(selection: self.$pendingQuickAction, label: EmptyView()) {
-                ForEach(QuickAction.allCases, id: \.self) { menu in
+                ForEach(GuessData.QuickAction.allCases, id: \.self) { menu in
                     Text(LocalizedStringKey(menu.rawValue)).tag(menu)
                         .font(.system(Font.TextStyle.headline, design: Font.Design.rounded))
                     .lineLimit(nil)

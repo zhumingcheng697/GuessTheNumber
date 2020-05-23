@@ -48,7 +48,7 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
 
     func applicationDidFinishLaunching() {
         // Perform any final initialization of your application.
-        guessData.quickAction = QuickAction(rawValue: UserDefaults.standard.string(forKey: "userSetQuickAction") ?? "None") ?? QuickAction.none
+        guessData.quickAction = GuessData.QuickAction(rawValue: UserDefaults.standard.string(forKey: "userSetQuickAction") ?? "None") ?? GuessData.QuickAction.none
         
         let restoredUpperRange = UserDefaults.standard.integer(forKey: "userSetUpperRange")
         if restoredUpperRange != 0 {

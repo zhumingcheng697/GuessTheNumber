@@ -12,16 +12,6 @@ import SwiftUI
 
 var guessData = GuessData()
 
-enum QuickAction: String, CaseIterable {
-    case none = "None"
-    case letMeGuess = "Let Me Guess"
-    case letAiGuess = "Let AI Guess"
-    case randomizer = "Randomizer"
-    case randomNumber = "Random Number"
-    case randomColor = "Random Color"
-    case randomBoolean = "Random Boolean"
-}
-
 class GuessData: ObservableObject {
     @Published var quickAction = QuickAction.none
     @Published var upperRange = 99
@@ -51,6 +41,16 @@ class GuessData: ObservableObject {
     @Published var hasAiWon = false
     @Published var askWhenUserGuessing = false
     @Published var askWhenAiGuessing = false
+    
+    enum QuickAction: String, CaseIterable {
+        case none = "None"
+        case letMeGuess = "Let Me Guess"
+        case letAiGuess = "Let AI Guess"
+        case randomizer = "Randomizer"
+        case randomNumber = "Random Number"
+        case randomColor = "Random Color"
+        case randomBoolean = "Random Boolean"
+    }
     
     func wasUserGuessing() -> Bool {
         return (self.isUserGuessing && self.userGuessedNumber != -1)
