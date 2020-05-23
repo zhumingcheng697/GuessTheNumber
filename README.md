@@ -1,6 +1,6 @@
 # GuessTheNumber
 
-GuessTheNumber is a currently standalone watchOS app that allows the user to guess numbers with the “AI” in the app, or randomize a number, color, or boolean value. The app takes advantage of latest technologies including `SwiftUI`, `SF Symbols`, watchOS complications, and Siri watch face shortcut donation. GuessTheNumber has also been localized for English and Chinese and I plan to bring Japanese and Russian localization to the app in the future as well. 
+GuessTheNumber is a currently standalone watchOS app that allows the user to guess numbers with the “AI” in the app, or randomize a number, color, or boolean value. The app takes advantage of latest technologies including `SwiftUI`, `SF Symbols`, watchOS complications, and Siri watch face shortcut donation. GuessTheNumber has also been localized for English, Chinese, and Russian, and I plan to bring Japanese localization to the app in the future as well. 
 
 ## Installation
 
