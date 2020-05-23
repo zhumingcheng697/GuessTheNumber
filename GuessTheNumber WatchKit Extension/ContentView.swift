@@ -292,11 +292,11 @@ struct SettingsView: View {
     
     var body: some View {
         List {
-            NavigationLink(destination: ShortcutActionSettingsView(pendingQuickAction: self.data.quickAction), isActive: self.$data.isEditingQuickAction, label: {
+            NavigationLink(destination: QuickActionSettingsView(pendingQuickAction: self.data.quickAction), isActive: self.$data.isEditingQuickAction, label: {
                 VStack(alignment: .leading) {
                     Text("Quick Action")
                     
-                    Text(LocalizedStringKey(self.data.quickAction))
+                    Text(LocalizedStringKey(self.data.quickAction.rawValue))
                         .font(.caption)
                         .foregroundColor(.gray)
                 }
@@ -329,15 +329,15 @@ struct SettingsView: View {
     }
 }
 
-struct ShortcutActionSettingsView: View {
+struct QuickActionSettingsView: View {
     @EnvironmentObject var data: GuessData
-    @State var pendingQuickAction: String
+    @State var pendingQuickAction: QuickAction
     
     var body: some View {
         VStack {
             Picker(selection: self.$pendingQuickAction, label: EmptyView()) {
-                ForEach(["None", "Let Me Guess", "Let AI Guess", "Randomizer", "Random Number", "Random Color", "Random Boolean"], id: \.self) { menu in
-                    Text(LocalizedStringKey(menu)).tag(menu)
+                ForEach(QuickAction.allCases, id: \.self) { menu in
+                    Text(LocalizedStringKey(menu.rawValue)).tag(menu)
                         .font(.system(Font.TextStyle.headline, design: Font.Design.rounded))
                     .lineLimit(nil)
                 }
@@ -346,7 +346,7 @@ struct ShortcutActionSettingsView: View {
             Button(action: {
                 self.data.isEditingQuickAction = false
                 self.data.quickAction = self.pendingQuickAction
-                UserDefaults.standard.set(self.pendingQuickAction, forKey: "userSetQuickAction")
+                UserDefaults.standard.set(self.pendingQuickAction.rawValue, forKey: "userSetQuickAction")
             }, label: {
                 Text("Done")
             })

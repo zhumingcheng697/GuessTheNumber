@@ -12,8 +12,18 @@ import SwiftUI
 
 var guessData = GuessData()
 
+enum QuickAction: String, CaseIterable {
+    case none = "None"
+    case letMeGuess = "Let Me Guess"
+    case letAiGuess = "Let AI Guess"
+    case randomizer = "Randomizer"
+    case randomNumber = "Random Number"
+    case randomColor = "Random Color"
+    case randomBoolean = "Random Boolean"
+}
+
 class GuessData: ObservableObject {
-    @Published var quickAction = "None"
+    @Published var quickAction = QuickAction.none
     @Published var upperRange = 99
     @Published var usingHex = false
     @Published var userGuessingCorrectNumber = 0
@@ -192,17 +202,17 @@ class GuessData: ObservableObject {
     
     func autoRedirect(reset: Bool = true) {
         switch self.quickAction {
-        case "Let Me Guess":
+        case .letMeGuess:
             self.launchUserGuessing(reset: reset)
-        case "Let AI Guess":
+        case .letAiGuess:
             self.launchAiGuessing(reset: reset)
-        case "Randomizer":
+        case .randomizer:
             self.launchRandomizer()
-        case "Random Number":
+        case .randomNumber:
             self.launchRandomNumber()
-        case "Random Color":
+        case .randomColor:
             self.launchRandomColor()
-        case "Random Boolean":
+        case .randomBoolean:
             self.launchRandomBoolean()
         default:
             break

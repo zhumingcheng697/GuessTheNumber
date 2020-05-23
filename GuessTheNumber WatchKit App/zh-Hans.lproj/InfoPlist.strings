@@ -6,4 +6,4 @@
   Copyright © 2020 McCoy Zhu. All rights reserved.
 */
 
-"Bundle display name" = "猜数字";
+"CFBundleDisplayName" = "猜数字";

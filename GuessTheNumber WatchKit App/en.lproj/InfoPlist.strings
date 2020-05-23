@@ -6,4 +6,4 @@
   Copyright © 2020 McCoy Zhu. All rights reserved.
 */
 
-"Bundle display name" = "Guess";
+"CFBundleDisplayName" = "Guess";

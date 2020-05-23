@@ -12,27 +12,29 @@ import Foundation
 
 class ExtensionDelegate: NSObject, WKExtensionDelegate {
     
+    enum ReopenDestination: String {
+        case userGuessing, aiGuessing, randomizeNumber, randomizeColor, randomizeBoolean
+    }
+    
     func handle(_ userActivity: NSUserActivity) {
-        if let reopenTo = userActivity.userInfo?["reopenTo"] as? String {
+        if let reopenTo = ReopenDestination(rawValue: userActivity.userInfo?["reopenTo"] as? String ?? "") {
             switch reopenTo {
-            case "userGuessing":
+            case .userGuessing:
                 guessData.tryRestoreUserGuessingStatus()
-            case "aiGuessing":
+            case .aiGuessing:
                 guessData.tryRestoreAiGuessingStatus()
-            case "randomizeNumber":
+            case .randomizeNumber:
                 guessData.launchRandomNumber()
-            case "randomizeColor":
+            case .randomizeColor:
                 guessData.launchRandomColor()
-            case "randomizeBoolean":
+            case .randomizeBoolean:
                 guessData.launchRandomBoolean()
-            default:
-                break
             }
         }
     }
     
     func handleUserActivity(_ userInfo: [AnyHashable : Any]?) {
-        if guessData.quickAction != "None" {
+        if guessData.quickAction != .none {
             if guessData.tryRestoreUserGuessingStatus() {
                 guessData.showCompareResult = true
                 guessData.askWhenUserGuessing = true
@@ -46,7 +48,7 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
 
     func applicationDidFinishLaunching() {
         // Perform any final initialization of your application.
-        guessData.quickAction = UserDefaults.standard.string(forKey: "userSetQuickAction") ?? "None"
+        guessData.quickAction = QuickAction(rawValue: UserDefaults.standard.string(forKey: "userSetQuickAction") ?? "None") ?? QuickAction.none
         
         let restoredUpperRange = UserDefaults.standard.integer(forKey: "userSetUpperRange")
         if restoredUpperRange != 0 {
@@ -74,29 +76,31 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
         // Use this method to pause ongoing tasks, disable timers, etc.
         
         let activity = NSUserActivity(activityType: "mccoyzhu.GuessTheNumber.Reopen")
+        var titleKey: String
+        var destination: ReopenDestination
         var imageName: String
         
         if guessData.wasUserGuessing() {
-            activity.title = NSLocalizedString("Resume Game", comment: "")
-            activity.userInfo = ["reopenTo" : "userGuessing"]
+            titleKey = "Resume Game"
+            destination = .userGuessing
             imageName = "person.crop.circle.fill"
             guessData.storeUserGuessingStatus()
         } else if guessData.wasAiGuessing() {
-            activity.title = NSLocalizedString("Resume Game", comment: "")
-            activity.userInfo = ["reopenTo" : "aiGuessing"]
+            titleKey = "Resume Game"
+            destination = .aiGuessing
             imageName = "gamecontroller.fill"
             guessData.storeAiGuessingStatus()
         } else if guessData.isInRandomizer && guessData.isRandomizingNumber {
-            activity.title = NSLocalizedString("Randomize Number", comment: "")
-            activity.userInfo = ["reopenTo" : "randomizeNumber"]
+            titleKey = "Randomize Number"
+            destination = .randomizeNumber
             imageName = "textformat.123"
         } else if guessData.isInRandomizer && guessData.isRandomizingColor {
-            activity.title = NSLocalizedString("Randomize Color", comment: "")
-            activity.userInfo = ["reopenTo" : "randomizeColor"]
+            titleKey = "Randomize Color"
+            destination = .randomizeColor
             imageName = "paintbrush"
         } else if guessData.isInRandomizer && guessData.isRandomizingBoolean {
-            activity.title = NSLocalizedString("Randomize Boolean", comment: "")
-            activity.userInfo = ["reopenTo" : "randomizeBoolean"]
+            titleKey = "Randomize Boolean"
+            destination = .randomizeBoolean
             imageName = "questionmark.circle"
         } else {
             if UserDefaults.standard.bool(forKey: "relevantShortcutAdded") {
@@ -107,9 +111,14 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
             return
         }
         
+        activity.title = NSLocalizedString(titleKey, comment: "")
+        activity.userInfo = ["reopenTo" : destination.rawValue]
         activity.requiredUserInfoKeys = ["reopenTo"]
+        activity.isEligibleForSearch = true
+        activity.isEligibleForHandoff = true
         activity.isEligibleForPrediction = true
-        activity.persistentIdentifier = "\(activity.userInfo?["reopenTo"] ?? "Error")\(Int.random(in: 0 ..< 100))"
+        activity.isEligibleForPublicIndexing = true
+        activity.persistentIdentifier = "\((activity.userInfo?["reopenTo"] as? ReopenDestination)?.rawValue ?? "Error")\(Int.random(in: 0 ..< 100))"
         activity.becomeCurrent()
         
         let shortcut = INShortcut(userActivity: activity)
