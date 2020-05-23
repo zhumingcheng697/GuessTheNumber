@@ -8,6 +8,7 @@
 
 import WatchKit
 import Intents
+import Foundation
 
 class ExtensionDelegate: NSObject, WKExtensionDelegate {
     
@@ -78,25 +79,25 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
         var imageName: String
         
         if guessData.wasUserGuessing() {
-            activity.title = "Resume Game"
+            activity.title = NSLocalizedString("Resume Game", comment: "")
             activity.userInfo = ["reopenTo" : "userGuessing"]
             imageName = "person.crop.circle.fill"
             guessData.storeUserGuessingStatus()
         } else if guessData.wasAiGuessing() {
-            activity.title = "Resume Game"
+            activity.title = NSLocalizedString("Resume Game", comment: "")
             activity.userInfo = ["reopenTo" : "aiGuessing"]
             imageName = "gamecontroller.fill"
             guessData.storeAiGuessingStatus()
         } else if guessData.isInRandomizer && guessData.isRandomizingNumber {
-            activity.title = "Randomize Number"
+            activity.title = NSLocalizedString("Randomize Number", comment: "")
             activity.userInfo = ["reopenTo" : "randomizeNumber"]
             imageName = "textformat.123"
         } else if guessData.isInRandomizer && guessData.isRandomizingColor {
-            activity.title = "Randomize Color"
+            activity.title = NSLocalizedString("Randomize Color", comment: "")
             activity.userInfo = ["reopenTo" : "randomizeColor"]
             imageName = "paintbrush"
         } else if guessData.isInRandomizer && guessData.isRandomizingBoolean {
-            activity.title = "Randomize Boolean"
+            activity.title = NSLocalizedString("Randomize Boolean", comment: "")
             activity.userInfo = ["reopenTo" : "randomizeBoolean"]
             imageName = "questionmark.circle"
         } else {

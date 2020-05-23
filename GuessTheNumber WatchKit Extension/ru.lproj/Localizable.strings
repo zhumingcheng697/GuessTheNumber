@@ -9,57 +9,57 @@
 
 /* Complication Controller */
 
-"Guess The Number" = "猜数字";
+"Guess The Number" = "Угадай Число";
 
-"Guess" = "猜数字";
+"Guess" = "Угадай";
 
 /* Content View - User Guessing */
 
-"Guess a number between 0 and %@" = "在0到%@里猜一个数字";
+"Guess a number between 0 and %@" = "Угадайте число от 0 до %@";
 
-"Comfirm" = "确认";
+"Confirm" = "Подтвердить";
 
-"Yay" = "耶";
+"Yay" = "Ура";
 
-"Try higher" = "猜高点";
+"Try higher" = "Угадай больше";
 
-"Try lower" = "猜低点";
+"Try lower" = "Угадай меньше";
 
-"Trial: %@" = "尝试%@";
+"Trial: %@" = "Пробный: %@";
 
 /* Content View - AI Guessing */
 
-"Choose a number between 0 and %@" = "在0到%@里选一个数字";
+"Choose a number between 0 and %@" = "Выберите число от 0 до %@";
 
-"It is %@!" = "     是%@！     ";
+"It is %@!" = "     Это %@!     ";
 
-"Is it %@?" = "     是%@吗？     ";
+"Is it %@?" = "     Это %@?     ";
 
-"Correct" = "是的";
+"Correct" = "Да";
 
-"Too High" = "猜高了";
+"Too High" = "Слишком Большого";
 
-"Too Low" = "猜低了";
+"Too Low" = "Слишком Мало";
 
-"Hurray" = "耶";
+"Hurray" = "Ура";
 
 /* Content View - User Guessing & AI Guessing */
 
-"Ready" = "好的";
+"Ready" = "Готов";
 
-"You have an unfinished game" = "上一局游戏还没有结束";
+"You have an unfinished game" = "Ваша последняя игра не закончилась";
 
-"Quit" = "退出";
+"Quit" = "Выйти";
 
-"Resume" = "继续游戏";
+"Resume" = "Продолжить";
 
-"Restart" = "新游戏";
+"Restart" = "Перезапустить";
 
 /* Content View - Randomizer */
 
-"Number" = "数字";
+"Number" = "Число";
 
-"Color" = "颜色";
+"Color" = "Цвет";
 
 "Boolean" = "Булев";
 
@@ -73,30 +73,40 @@
 
 /* Content View - Settings */
 
-"Quick Action" = "快捷指令";
+"Quick Action" = "Быстрая Команда";
 
-"Upper Range for Numbers" = "数字上界";
+"Upper Range for Numbers" = "Предел Числа";
 
-"Upper Range" = "上界";
+"Upper Range" = "Предел";
 
-"Use Hex Value for Colors" = "使用十六进制表示颜色";
+"Use Hex Value for Colors" = "Показать Цвет в Hex Значении";
 
-"None" = "无";
+"None" = "Никакая";
 
-"Done" = "确认";
+"Done" = "Подтвердить";
 
 /* Content View - Menus */
 
-"Let Me Guess" = "让我来猜";
+"Let Me Guess" = "Угадаю";
 
-"Let AI Guess" = "让AI来猜";
+"Let AI Guess" = "AI Угадает";
 
-"Randomizer" = "随机生成器";
+"Randomizer" = "Случайное";
 
-"Random Number" = "随机数字";
+"Random Number" = "Число";
 
-"Random Color" = "随机颜色";
+"Random Color" = "Цвет";
 
-"Random Boolean" = "随机布尔值";
+"Random Boolean" = "Булев";
 
-"Settings" = "设置";
+"Settings" = "Настройки";
+
+/* Shortcuts */
+
+"Resume Game" = "Продолжить Игру";
+
+"Randomize Number" = "Случайное Число";
+
+"Randomize Color" = "Случайный Цвет";
+
+"Randomize Boolean" = "Случайный Булев";

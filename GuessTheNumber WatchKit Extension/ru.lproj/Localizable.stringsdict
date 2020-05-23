@@ -5,29 +5,55 @@
 	<key>You get the number (%@) in %@ %d!</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>
-		<string>你用%2$@%3$#@tries@猜中了数字(%1$@)！</string>
+		<string>Вы угадали правильное число (%1$@) %3$#@prop@ %2$@ %3$#@tries@!</string>
+		<key>prop</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>one</key>
+			<string>за</string>
+			<key>other</key>
+			<string>в</string>
+		</dict>
 		<key>tries</key>
 		<dict>
 			<key>NSStringFormatSpecTypeKey</key>
 			<string>NSStringPluralRuleType</string>
 			<key>NSStringFormatValueTypeKey</key>
 			<string>d</string>
+			<key>one</key>
+			<string>попытку</string>
 			<key>other</key>
-			<string>次</string>
+			<string>попытках</string>
 		</dict>
 	</dict>
 	<key>AI gets the number (%@) in %@ %d!</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>
-		<string>AI用%2$@%3$#@tries@猜中了数字(%1$@)！</string>
+		<string>AI угадал правильное число (%1$@) %3$#@prop@ %2$@ %3$#@tries@!</string>
+		<key>prop</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>one</key>
+			<string>за</string>
+			<key>other</key>
+			<string>в</string>
+		</dict>
 		<key>tries</key>
 		<dict>
 			<key>NSStringFormatSpecTypeKey</key>
 			<string>NSStringPluralRuleType</string>
 			<key>NSStringFormatValueTypeKey</key>
 			<string>d</string>
+			<key>one</key>
+			<string>попытку</string>
 			<key>other</key>
-			<string>次</string>
+			<string>попытках</string>
 		</dict>
 	</dict>
 </dict>
