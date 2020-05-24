@@ -27,6 +27,8 @@
 
 "Trial: %@" = "Пробный: %@";
 
+"OK" = "Хорошо";
+
 /* Content View - AI Guessing */
 
 "Choose a number between 0 and %@" = "Выберите число от 0 до %@";

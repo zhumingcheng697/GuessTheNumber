@@ -27,6 +27,8 @@
 
 "Trial: %@" = "嘗試%@";
 
+"OK" = "好";
+
 /* Content View - AI Guessing */
 
 "Choose a number between 0 and %@" = "在0到%@裡選一個數字";

@@ -46,13 +46,14 @@ struct UserGuessingView: View {
                 Button(action: {
                     self.data.showCompareResult = true
                     self.data.userGuessedTimes += 1
+                    self.data.userLastCheckedNumber = self.data.userGuessedNumber
                 }, label: {
                     Text("Confirm")
                 })
             }
         }.navigationBarTitle(Text("Let Me Guess"))
         .alert(isPresented: self.$data.showCompareResult, content: {
-            if self.data.userGuessedNumber == self.data.userGuessingCorrectNumber {
+            if self.data.userGuessedNumber == self.data.userGuessingCorrectNumber && self.data.userLastCheckedNumber == self.data.userGuessedNumber {
                 return Alert(title: Text("Yay"), message: Text("You get the number (\(formatNumber(self.data.userGuessingCorrectNumber))) in \(formatNumber(self.data.userGuessedTimes)) \(self.data.userGuessedTimes, specifier: "%d")!"), primaryButton: .default(Text("Quit"), action: {
                     if self.data.askWhenUserGuessing {
                         self.data.autoRedirect()
@@ -70,9 +71,17 @@ struct UserGuessingView: View {
                     self.data.askWhenUserGuessing = false
                 }), secondaryButton: .default(Text("Resume"), action: {
                     self.data.askWhenUserGuessing = false
+                    if self.data.userLastCheckedNumber == self.data.userGuessedNumber {
+                        self.data.userLastCheckedNumber = -1
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
+                            self.data.showCompareResult = true
+                        }
+                    }
                 }))
             } else {
-                 return Alert(title: Text(self.data.userGuessedNumber > self.data.userGuessingCorrectNumber ? "Try lower" : "Try higher"), message: Text("Trial: \(formatNumber(self.data.userGuessedTimes))"))
+                return Alert(title: Text(self.data.userGuessedNumber > self.data.userGuessingCorrectNumber ? "Try lower" : "Try higher"), message: Text("Trial: \(formatNumber(self.data.userGuessedTimes))"), dismissButton: .default(Text("OK"), action: {
+                    self.data.userLastCheckedNumber = -1
+                }))
             }
         })
     }

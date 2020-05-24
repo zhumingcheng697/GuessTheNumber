@@ -12,12 +12,13 @@ import SwiftUI
 
 var guessData = GuessData()
 
-class GuessData: ObservableObject {
+final class GuessData: ObservableObject {
     @Published var quickAction = QuickAction.none
     @Published var upperRange = 99
     @Published var usingHex = false
     @Published var userGuessingCorrectNumber = 0
-    @Published var userGuessedNumber = 0
+    @Published var userLastCheckedNumber = -1
+    @Published var userGuessedNumber = -1
     @Published var userGuessedTimes = 0
     @Published var aiGuessingLowerLimit = 0
     @Published var aiGuessingUpperLimit = 99
@@ -86,6 +87,7 @@ class GuessData: ObservableObject {
     func storeUserGuessingStatus() {
         UserDefaults.standard.set(true, forKey: "shouldRestoreUserGamingStatus")
         UserDefaults.standard.set(self.userGuessingCorrectNumber, forKey: "userGuessingCorrectNumber")
+        UserDefaults.standard.set(self.userLastCheckedNumber, forKey: "userLastCheckedNumber")
         UserDefaults.standard.set(self.userGuessedNumber, forKey: "userGuessedNumber")
         UserDefaults.standard.set(self.userGuessedTimes, forKey: "userGuessedTimes")
         UserDefaults.standard.set(self.showCompareResult, forKey: "showCompareResult")
@@ -101,38 +103,44 @@ class GuessData: ObservableObject {
     }
     
     @discardableResult func tryRestoreUserGuessingStatus() -> Bool {
-        if UserDefaults.standard.bool(forKey: "shouldRestoreUserGamingStatus") {
-            self.userGuessingCorrectNumber = UserDefaults.standard.integer(forKey: "userGuessingCorrectNumber")
-            self.userGuessedNumber = UserDefaults.standard.integer(forKey: "userGuessedNumber")
-            self.userGuessedTimes = UserDefaults.standard.integer(forKey: "userGuessedTimes")
-            self.showCompareResult = UserDefaults.standard.bool(forKey: "showCompareResult")
-            self.launchUserGuessing(reset: false)
-            for key in ["shouldRestoreUserGamingStatus", "userGuessingCorrectNumber", "userGuessedNumber", "userGuessedTimes", "showCompareResult"] {
-                UserDefaults.standard.removeObject(forKey: key)
-            }
-            return true
+        guard UserDefaults.standard.bool(forKey: "shouldRestoreUserGamingStatus") else {
+            return false
         }
-        return false
+        
+        self.userGuessingCorrectNumber = UserDefaults.standard.integer(forKey: "userGuessingCorrectNumber")
+        self.userLastCheckedNumber = UserDefaults.standard.integer(forKey: "userLastCheckedNumber")
+        self.userGuessedNumber = UserDefaults.standard.integer(forKey: "userGuessedNumber")
+        self.userGuessedTimes = UserDefaults.standard.integer(forKey: "userGuessedTimes")
+        self.showCompareResult = UserDefaults.standard.bool(forKey: "showCompareResult")
+        self.launchUserGuessing(reset: false)
+        for key in ["shouldRestoreUserGamingStatus", "userGuessingCorrectNumber", "userGuessedNumber", "userGuessedTimes", "showCompareResult"] {
+            UserDefaults.standard.removeObject(forKey: key)
+        }
+        
+        return true
     }
     
     @discardableResult func tryRestoreAiGuessingStatus() -> Bool {
-        if UserDefaults.standard.bool(forKey: "shouldRestoreAiGamingStatus") {
-            self.aiGuessingLowerLimit = UserDefaults.standard.integer(forKey: "aiGuessingLowerLimit")
-            self.aiGuessingUpperLimit = UserDefaults.standard.integer(forKey: "aiGuessingUpperLimit")
-            self.aiGuessedNumber = UserDefaults.standard.integer(forKey: "aiGuessedNumber")
-            self.aiGuessedTimes = UserDefaults.standard.integer(forKey: "aiGuessedTimes")
-            self.hasAiWon = UserDefaults.standard.bool(forKey: "hasAiWon")
-            self.launchAiGuessing(reset: false)
-            for key in ["shouldRestoreAiGamingStatus", "aiGuessingLowerLimit", "aiGuessingUpperLimit", "aiGuessedNumber", "aiGuessedTimes", "hasAiWon"] {
-                UserDefaults.standard.removeObject(forKey: key)
-            }
-            return true
+        guard UserDefaults.standard.bool(forKey: "shouldRestoreAiGamingStatus") else {
+            return false
         }
-        return false
+        
+        self.aiGuessingLowerLimit = UserDefaults.standard.integer(forKey: "aiGuessingLowerLimit")
+        self.aiGuessingUpperLimit = UserDefaults.standard.integer(forKey: "aiGuessingUpperLimit")
+        self.aiGuessedNumber = UserDefaults.standard.integer(forKey: "aiGuessedNumber")
+        self.aiGuessedTimes = UserDefaults.standard.integer(forKey: "aiGuessedTimes")
+        self.hasAiWon = UserDefaults.standard.bool(forKey: "hasAiWon")
+        self.launchAiGuessing(reset: false)
+        for key in ["shouldRestoreAiGamingStatus", "aiGuessingLowerLimit", "aiGuessingUpperLimit", "aiGuessedNumber", "aiGuessedTimes", "hasAiWon"] {
+            UserDefaults.standard.removeObject(forKey: key)
+        }
+        
+        return true
     }
     
     func resetUserGuessing() {
         self.userGuessingCorrectNumber = Int.random(in: 0 ..< self.upperRange + 1)
+        self.userLastCheckedNumber = -1
         self.userGuessedNumber = -1
         self.userGuessedTimes = 0
     }

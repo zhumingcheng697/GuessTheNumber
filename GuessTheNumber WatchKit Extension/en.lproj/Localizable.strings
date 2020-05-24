@@ -27,6 +27,8 @@
 
 "Trial: %@" = "Trial: %@";
 
+"OK" = "OK";
+
 /* Content View - AI Guessing */
 
 "Choose a number between 0 and %@" = "Choose a number between 0 and %@";
