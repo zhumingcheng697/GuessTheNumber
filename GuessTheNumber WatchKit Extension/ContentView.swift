@@ -270,6 +270,7 @@ struct RandomColorView: View {
 
 struct RandomBooleanView: View {
     @EnvironmentObject var data: GuessData
+    @Environment(\.locale) var locale: Locale
     
     var body: some View {
         VStack {
@@ -280,7 +281,7 @@ struct RandomBooleanView: View {
                     .font(.system(.largeTitle, design: .rounded))
                     .foregroundColor(self.data.randomDouble >= 0 ? .green : .red)
                 
-                Image(systemName: self.data.randomDouble >= 0 ? "checkmark" : "xmark")
+                Image(systemName: self.data.randomDouble >= 0 ? (locale.languageCode == "ja" ? "circle" : "checkmark") : "xmark")
                     .font(.system(.largeTitle, design: .rounded))
                     .foregroundColor(self.data.randomDouble >= 0 ? .green : .red)
             }

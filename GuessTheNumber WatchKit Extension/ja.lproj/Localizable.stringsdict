@@ -5,7 +5,7 @@
 	<key>You get the number (%@) in %@ %d!</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>
-		<string>你用%2$@%3$#@tries@猜中了数字(%1$@)！</string>
+		<string>%2$@%3$#@tries@で数(%1$@)を推測しました！</string>
 		<key>tries</key>
 		<dict>
 			<key>NSStringFormatSpecTypeKey</key>
@@ -13,13 +13,13 @@
 			<key>NSStringFormatValueTypeKey</key>
 			<string>d</string>
 			<key>other</key>
-			<string>次</string>
+			<string>回</string>
 		</dict>
 	</dict>
 	<key>AI gets the number (%@) in %@ %d!</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>
-		<string>AI用%2$@%3$#@tries@猜中了数字(%1$@)！</string>
+		<string>AIは%2$@%3$#@tries@で数(%1$@)を推測しました！</string>
 		<key>tries</key>
 		<dict>
 			<key>NSStringFormatSpecTypeKey</key>
@@ -27,7 +27,7 @@
 			<key>NSStringFormatValueTypeKey</key>
 			<string>d</string>
 			<key>other</key>
-			<string>次</string>
+			<string>回</string>
 		</dict>
 	</dict>
 </dict>
