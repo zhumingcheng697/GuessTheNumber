@@ -16,12 +16,12 @@ final class GuessData: ObservableObject {
     @Published var quickAction = QuickAction.none
     @Published var upperRange = 99
     @Published var usingHex = false
-    @Published var userGuessingCorrectNumber = 0
-    @Published var userLastCheckedNumber = -1
+    var userGuessingCorrectNumber = 0
+    var userLastCheckedNumber = -1
     @Published var userGuessedNumber = -1
     @Published var userGuessedTimes = 0
-    @Published var aiGuessingLowerLimit = 0
-    @Published var aiGuessingUpperLimit = 99
+    var aiGuessingLowerLimit = 0
+    var aiGuessingUpperLimit = 99
     @Published var aiGuessedNumber = Int((0 + 99 + Int.random(in: 0 ... 1)) / 2)
     @Published var aiGuessedTimes = 0
     @Published var randomNumber = Int.random(in: 0 ..< 99 + 1)

@@ -252,15 +252,17 @@ struct RandomColorView: View {
                     Rectangle()
                         .foregroundColor(Color(red: Double(self.data.randomR) / 255.0, green: Double(self.data.randomG) / 255.0, blue: Double(self.data.randomB) / 255.0))
                         .cornerRadius(8)
-                        .animation(.default)
                     
                     Text(self.data.usingHex ? "#\(String(format: "%02X", self.data.randomR))\(String(format: "%02X", self.data.randomG))\(String(format: "%02X", self.data.randomB))" : "(\(self.data.randomR), \(self.data.randomG), \(self.data.randomB))")
                         .foregroundColor(isColorTooBright() ? .black : .white)
+                        .animation(nil)
                 }
             }).buttonStyle(PlainButtonStyle())
             
             Button(action: {
-                self.data.resetRandomColor()
+                withAnimation {
+                    self.data.resetRandomColor()
+                }
             }, label: {
                 Text("Randomize")
             })
