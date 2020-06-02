@@ -8,10 +8,12 @@
 
 import SwiftUI
 
-func formatNumber(_ number: Int) -> String {
-    let formatter = NumberFormatter()
-    formatter.numberStyle = .decimal
-    return formatter.string(from: number as NSNumber)!
+extension Int {
+    func formatted() -> String {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .decimal
+        return formatter.string(from: self as NSNumber)!
+    }
 }
 
 struct UserGuessingView: View {
@@ -38,7 +40,7 @@ struct UserGuessingView: View {
             } else {
                 Picker(selection: self.$data.userGuessedNumber, label: EmptyView()) {
                     ForEach(0 ..< self.data.upperRange + 1) { index in
-                        Text(formatNumber(index))
+                        Text(index.formatted())
                             .font(.system(size: 22, weight: .medium, design: .rounded))
                     }
                 }
@@ -54,7 +56,7 @@ struct UserGuessingView: View {
         }.navigationBarTitle(Text("Let Me Guess"))
         .alert(isPresented: self.$data.showCompareResult, content: {
             if self.data.userGuessedNumber == self.data.userGuessingCorrectNumber && self.data.userLastCheckedNumber == self.data.userGuessedNumber {
-                return Alert(title: Text("Yay"), message: Text("You get the number (\(formatNumber(self.data.userGuessingCorrectNumber))) in \(formatNumber(self.data.userGuessedTimes)) \(self.data.userGuessedTimes, specifier: "%d")!"), primaryButton: .default(Text("Quit"), action: {
+                return Alert(title: Text("Yay"), message: Text("You get the number (\(self.data.userGuessingCorrectNumber.formatted())) in \(self.data.userGuessedTimes.formatted()) \(self.data.userGuessedTimes, specifier: "%d")!"), primaryButton: .default(Text("Quit"), action: {
                     if self.data.askWhenUserGuessing {
                         self.data.autoRedirect()
                         self.data.askWhenUserGuessing = false
@@ -79,7 +81,7 @@ struct UserGuessingView: View {
                     }
                 }))
             } else {
-                return Alert(title: Text(self.data.userGuessedNumber > self.data.userGuessingCorrectNumber ? "Try lower" : "Try higher"), message: Text("Trial: \(formatNumber(self.data.userGuessedTimes))"), dismissButton: .default(Text("OK"), action: {
+                return Alert(title: Text(self.data.userGuessedNumber > self.data.userGuessingCorrectNumber ? "Try lower" : "Try higher"), message: Text("Trial: \(self.data.userGuessedTimes.formatted())"), dismissButton: .default(Text("OK"), action: {
                     self.data.userLastCheckedNumber = -1
                 }))
             }
@@ -95,7 +97,7 @@ struct AiGuessingView: View {
             if self.data.aiGuessedTimes == 0 {
                 Spacer()
                 
-                Text("Choose a number between 0 and \(formatNumber(self.data.upperRange))")
+                Text("Choose a number between 0 and \(self.data.upperRange.formatted())")
                     .font(.headline)
                     .multilineTextAlignment(.center)
 
@@ -116,7 +118,7 @@ struct AiGuessingView: View {
                                 Spacer()
                             }
                             
-                            Text(self.data.aiGuessingLowerLimit == self.data.aiGuessingUpperLimit ? "It is \(formatNumber(self.data.aiGuessedNumber))!" : "Is it \(formatNumber(self.data.aiGuessedNumber))?")
+                            Text(self.data.aiGuessingLowerLimit == self.data.aiGuessingUpperLimit ? "It is \(self.data.aiGuessedNumber.formatted())!" : "Is it \(self.data.aiGuessedNumber.formatted())?")
 
                             Spacer()
                             
@@ -159,7 +161,7 @@ struct AiGuessingView: View {
             }
         }.navigationBarTitle(Text("Let AI Guess"))
         .alert(isPresented: self.$data.hasAiWon, content: {
-            Alert(title: Text("Hurray"), message: Text("AI gets the number (\(formatNumber(self.data.aiGuessedNumber))) in \(formatNumber(self.data.aiGuessedTimes)) \(self.data.aiGuessedTimes, specifier: "%d")!"), primaryButton: .default(Text("Quit"), action: {
+            Alert(title: Text("Hurray"), message: Text("AI gets the number (\(self.data.aiGuessedNumber.formatted())) in \(self.data.aiGuessedTimes.formatted()) \(self.data.aiGuessedTimes, specifier: "%d")!"), primaryButton: .default(Text("Quit"), action: {
                 if self.data.askWhenAiGuessing {
                     self.data.autoRedirect()
                     self.data.askWhenAiGuessing = false
@@ -219,7 +221,7 @@ struct RandomNumberView: View {
         VStack {
             Spacer()
             
-            Text(formatNumber(self.data.randomNumber))
+            Text(self.data.randomNumber.formatted())
                 .font(.system(.largeTitle, design: .rounded))
             
             Spacer()
@@ -321,7 +323,7 @@ struct SettingsView: View {
                     
                     Spacer()
                     
-                    Text(formatNumber(self.data.upperRange))
+                    Text(self.data.upperRange.formatted())
                         .foregroundColor(.gray)
                 }
             })
