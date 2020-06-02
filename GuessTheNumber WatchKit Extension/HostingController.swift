@@ -42,6 +42,7 @@ final class GuessData: ObservableObject {
     @Published var hasAiWon = false
     @Published var askWhenUserGuessing = false
     @Published var askWhenAiGuessing = false
+    @Published var warnUpperRange = false
     
     enum QuickAction: String, CaseIterable {
         case none = "None"
@@ -82,6 +83,7 @@ final class GuessData: ObservableObject {
             self.showCompareResult = false
             self.hasAiWon = false
         }
+        self.warnUpperRange = false
     }
     
     func storeUserGuessingStatus() {

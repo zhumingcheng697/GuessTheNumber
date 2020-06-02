@@ -24,19 +24,27 @@ struct UserGuessingView: View {
             if self.data.userGuessedNumber == -1 {
                 Spacer()
                 
-                Text("Guess a number between 0 and \(formatNumber(self.data.upperRange))")
+                Text(self.data.upperRange <= 1023 ? "Guess a number between 0 and \(self.data.upperRange.formatted())" : "Set the upper range lower than \(1024.formatted()) to play")
                     .font(.headline)
                     .multilineTextAlignment(.center)
 
                 Spacer()
                 
-                Button(action: {
-                    withAnimation {
-                        self.data.userGuessedNumber = 0
-                    }
-                }, label: {
-                    Text("Ready")
-                })
+                if self.data.upperRange <= 1023 {
+                    Button(action: {
+                        withAnimation {
+                            self.data.userGuessedNumber = 0
+                        }
+                    }, label: {
+                        Text("Ready")
+                    })
+                } else {
+                    Button(action: {
+                        self.data.isUserGuessing = false
+                    }, label: {
+                        Text("OK")
+                    })
+                }
             } else {
                 Picker(selection: self.$data.userGuessedNumber, label: EmptyView()) {
                     ForEach(0 ..< self.data.upperRange + 1) { index in
@@ -122,31 +130,33 @@ struct AiGuessingView: View {
 
                             Spacer()
                             
-                            Button(action: {
-                                self.data.hasAiWon = true
-                            }, label: {
-                                Text("Correct")
-                            })
-                                .accentColor(.green)
-                        
-                            if self.data.aiGuessingLowerLimit != self.data.aiGuessedNumber {
+                            VStack(spacing: 5) {
                                 Button(action: {
-                                    self.data.aiGuessedTimes += 1
-                                    self.data.aiGuessingUpperLimit = self.data.aiGuessedNumber - 1
-                                    self.data.aiGuessedNumber = Int((self.data.aiGuessingLowerLimit + self.data.aiGuessingUpperLimit + Int.random(in: 0 ... 1)) / 2)
+                                    self.data.hasAiWon = true
                                 }, label: {
-                                    Text("Too High")
-                                }).accentColor(.red)
-                            }
+                                    Text("Correct")
+                                })
+                                    .accentColor(.green)
                             
-                            if self.data.aiGuessingUpperLimit != self.data.aiGuessedNumber {
-                                Button(action: {
-                                    self.data.aiGuessedTimes += 1
-                                    self.data.aiGuessingLowerLimit = self.data.aiGuessedNumber + 1
-                                    self.data.aiGuessedNumber = Int((self.data.aiGuessingLowerLimit + self.data.aiGuessingUpperLimit + Int.random(in: 0 ... 1)) / 2)
-                                }, label: {
-                                    Text("Too Low")
-                                }).accentColor(.red)
+                                if self.data.aiGuessingLowerLimit != self.data.aiGuessedNumber {
+                                    Button(action: {
+                                        self.data.aiGuessedTimes += 1
+                                        self.data.aiGuessingUpperLimit = self.data.aiGuessedNumber - 1
+                                        self.data.aiGuessedNumber = Int((self.data.aiGuessingLowerLimit + self.data.aiGuessingUpperLimit + Int.random(in: 0 ... 1)) / 2)
+                                    }, label: {
+                                        Text("Too High")
+                                    }).accentColor(.red)
+                                }
+                                
+                                if self.data.aiGuessingUpperLimit != self.data.aiGuessedNumber {
+                                    Button(action: {
+                                        self.data.aiGuessedTimes += 1
+                                        self.data.aiGuessingLowerLimit = self.data.aiGuessedNumber + 1
+                                        self.data.aiGuessedNumber = Int((self.data.aiGuessingLowerLimit + self.data.aiGuessingUpperLimit + Int.random(in: 0 ... 1)) / 2)
+                                    }, label: {
+                                        Text("Too Low")
+                                    }).accentColor(.red)
+                                }
                             }
                         }
                         .animation(.default)
@@ -180,7 +190,7 @@ struct RandomizerView: View {
     @EnvironmentObject var data: GuessData
     
     var body: some View {
-        VStack {
+        VStack(spacing: 5) {
             NavigationLink(destination: RandomNumberView(), isActive: self.$data.isRandomizingNumber, label: {
                 HStack {
                     Image(systemName: "textformat.123")
@@ -373,22 +383,90 @@ struct UpperRangeSettingsView: View {
     @State var pendingUpperRange: Int
     
     var body: some View {
-        VStack {
-            Picker(selection: $pendingUpperRange, label: EmptyView()) {
-                ForEach([9, 99, 255, 999, 1023], id: \.self) { upper in
-                    Text(formatNumber(upper))
-                        .font(.system(size: 22, weight: .medium, design: .rounded))
+        GeometryReader { geo in
+            VStack(spacing: 3) {
+                Text("\(self.pendingUpperRange.formatted())")
+                    .font(.system(size: 22, weight: .medium, design: .rounded))
+                    .frame(width: geo.size.width, height: (geo.size.height - 12) / 5)
+                    .simultaneousGesture(DragGesture().onEnded({ value in
+                        if value.translation.width < 0 {
+                            self.pendingUpperRange /= 10
+                        }
+                    }))
+                
+                ForEach(0 ..< 3) { row in
+                    HStack(spacing: 3) {
+                        ForEach(0 ..< 3) { col in
+                            Button(action: {
+                                if !(self.pendingUpperRange >= 100000) {
+                                    self.pendingUpperRange *= 10
+                                    self.pendingUpperRange += (row * 3 + col + 1)
+                                }
+                            }, label: {
+                                Text("\((row * 3 + col + 1).formatted())")
+                            })
+                                .opacity(self.pendingUpperRange >= 100000 ? 0.5 : 1)
+                                .buttonStyle(PlainButtonStyle())
+                                .frame(width: (geo.size.width - 6) / 3, height: (geo.size.height - 12) / 5)
+                                .background(Color(red: 34.0 / 255.0, green: 34.0 / 255.0, blue: 35.0 / 255.0))
+                                .cornerRadius(5)
+                        }
+                    }
                 }
-            }
-            
-            Button(action: {
-                self.data.resetUpperRange(self.pendingUpperRange)
-                self.data.isEditingUpperRange = false
-                UserDefaults.standard.set(self.pendingUpperRange, forKey: "userSetUpperRange")
-            }, label: {
-                Text("Done")
-            })
-        }.navigationBarTitle(Text("Upper Range"))
+                
+                HStack(spacing: 3) {
+                    Button(action: {
+                        if self.pendingUpperRange <= 1023 {
+                            self.data.resetUpperRange(self.pendingUpperRange)
+                            self.data.isEditingUpperRange = false
+                            UserDefaults.standard.set(self.pendingUpperRange, forKey: "userSetUpperRange")
+                        } else {
+                            self.data.warnUpperRange = true
+                        }
+                    }, label: {
+                        Text(verbatim: "OK")
+                            .font(.system(.headline, design: .rounded))
+                            .foregroundColor(.green)
+                    })
+                        .disabled(self.pendingUpperRange == 0)
+                        .buttonStyle(PlainButtonStyle())
+                        .frame(width: (geo.size.width - 6) / 3, height: (geo.size.height - 12) / 5)
+                        .alert(isPresented: self.$data.warnUpperRange, content: {
+                            Alert(title: Text("“Let Me Guess” only supports numbers lower than \(1024.formatted())"), primaryButton: .cancel(Text("OK"), action: {
+                                self.data.resetUpperRange(self.pendingUpperRange)
+                                self.data.isEditingUpperRange = false
+                                UserDefaults.standard.set(self.pendingUpperRange, forKey: "userSetUpperRange")
+                            }), secondaryButton: .cancel())
+                        })
+                    
+                    Button(action: {
+                        if !(self.pendingUpperRange >= 100000 || self.pendingUpperRange == 0) {
+                            self.pendingUpperRange *= 10
+                        }
+                    }, label: {
+                        Text("\(0.formatted())")
+                    })
+                        .opacity(self.pendingUpperRange >= 100000 || self.pendingUpperRange == 0 ? 0.5 : 1)
+                        .buttonStyle(PlainButtonStyle())
+                        .frame(width: (geo.size.width - 6) / 3, height: (geo.size.height - 12) / 5)
+                        .background(Color(red: 34.0 / 255.0, green: 34.0 / 255.0, blue: 35.0 / 255.0))
+                        .cornerRadius(5)
+                    
+                    Button(action: {
+                        self.pendingUpperRange /= 10
+                    }, label: {
+                        Image(systemName: "delete.left.fill")
+                            .foregroundColor(.red)
+                    })
+                        .disabled(self.pendingUpperRange == 0)
+                        .buttonStyle(PlainButtonStyle())
+                        .simultaneousGesture(LongPressGesture(minimumDuration: 0.5).onEnded({ _ in
+                            self.pendingUpperRange = 0
+                        }))
+                        .frame(width: (geo.size.width - 6) / 3, height: (geo.size.height - 12) / 5)
+                }
+            }.navigationBarTitle(Text("Upper Range"))
+        }
     }
 }
 
@@ -398,7 +476,7 @@ struct ContentView: View {
     var body: some View {
         GeometryReader { geo in
             ScrollView {
-                VStack {
+                VStack(spacing: 5) {
                     NavigationLink(destination: UserGuessingView(), isActive: self.$data.isUserGuessing, label: {
                         HStack {
                             Image(systemName: "person.crop.circle.fill")
