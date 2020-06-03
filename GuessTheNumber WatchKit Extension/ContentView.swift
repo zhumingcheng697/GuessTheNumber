@@ -302,13 +302,11 @@ struct RandomBooleanView: View {
             
             HStack {
                 Text(self.data.randomDouble >= 0 ? "True" : "False")
-                    .font(.system(.largeTitle, design: .rounded))
-                    .foregroundColor(self.data.randomDouble >= 0 ? .green : .red)
                 
                 Image(systemName: self.data.randomDouble >= 0 ? (locale.languageCode == "ja" ? "circle" : "checkmark") : "xmark")
-                    .font(.system(.largeTitle, design: .rounded))
-                    .foregroundColor(self.data.randomDouble >= 0 ? .green : .red)
             }
+                .font(.system(.largeTitle, design: .rounded))
+                .foregroundColor(self.data.randomDouble >= 0 ? (locale.languageCode == "ja" ? .red : .green) : (locale.languageCode == "ja" ? .blue : .red))
             
             Spacer()
             

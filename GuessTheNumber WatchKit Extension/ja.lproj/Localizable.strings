@@ -19,7 +19,7 @@
 
 "Set the upper range lower than %@ to play" = "プレイするには、上限を%@より小さい数に設定してください";
 
-"Confirm" = "確認";
+"Confirm" = "確認する";
 
 "Yay" = "やった";
 
@@ -89,7 +89,7 @@
 
 "None" = "無し";
 
-"Done" = "確認";
+"Done" = "確認する";
 
 /* Content View - Menus */
 
