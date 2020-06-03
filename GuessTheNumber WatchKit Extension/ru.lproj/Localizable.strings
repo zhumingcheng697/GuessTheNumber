@@ -17,7 +17,7 @@
 
 "Guess a number between 0 and %@" = "Угадайте число от 0 до %@";
 
-"Set the upper range lower than %@ to play" = "Установите предел число меньше %@, чтобы играть";
+"Set the upper range lower than %@ to play" = "Установите предел меньше %@, чтобы играть";
 
 "Confirm" = "Подтвердить";
 
