@@ -16,6 +16,15 @@ extension Int {
     }
 }
 
+extension View {
+    func scaleToFitLine(_ lineLimit: Int? = 1) -> some View {
+        self
+            .scaledToFit()
+            .minimumScaleFactor(0.001)
+            .lineLimit(lineLimit ?? 1)
+    }
+}
+
 struct UserGuessingView: View {
     @EnvironmentObject var data: GuessData
     
@@ -50,6 +59,7 @@ struct UserGuessingView: View {
                     ForEach(0 ..< self.data.upperRange + 1) { index in
                         Text(index.formatted())
                             .font(.system(size: 22, weight: .medium, design: .rounded))
+                            .scaleToFitLine()
                     }
                 }
                 
@@ -122,11 +132,10 @@ struct AiGuessingView: View {
                 GeometryReader { geo in
                     ScrollView {
                         VStack(alignment: .center) {
-                            if self.data.aiGuessingLowerLimit == self.data.aiGuessedNumber || self.data.aiGuessingUpperLimit == self.data.aiGuessedNumber {
-                                Spacer()
-                            }
+                            Spacer()
                             
                             Text(self.data.aiGuessingLowerLimit == self.data.aiGuessingUpperLimit ? "It is \(self.data.aiGuessedNumber.formatted())!" : "Is it \(self.data.aiGuessedNumber.formatted())?")
+                                .scaleToFitLine()
 
                             Spacer()
                             
@@ -233,6 +242,7 @@ struct RandomNumberView: View {
             
             Text(self.data.randomNumber.formatted())
                 .font(.system(.largeTitle, design: .rounded))
+                .scaleToFitLine()
             
             Spacer()
             
@@ -328,13 +338,22 @@ struct SettingsView: View {
                 .padding(.vertical)
             
             NavigationLink(destination: UpperRangeSettingsView(pendingUpperRange: self.data.upperRange), isActive: self.$data.isEditingUpperRange, label: {
-                HStack {
-                    Text("Upper Range for Numbers")
-                    
-                    Spacer()
-                    
-                    Text(self.data.upperRange.formatted())
-                        .foregroundColor(.gray)
+                if self.data.upperRange < 10000 {
+                    HStack {
+                        Text("Upper Range for Numbers")
+                        
+                        Spacer()
+                        
+                        Text(self.data.upperRange.formatted())
+                            .foregroundColor(.gray)
+                    }
+                } else {
+                    VStack(alignment: .leading) {
+                        Text("Upper Range for Numbers")
+                        
+                        Text(self.data.upperRange.formatted())
+                            .foregroundColor(.gray)
+                    }
                 }
             })
                 .padding(.vertical)
@@ -362,8 +381,8 @@ struct QuickActionSettingsView: View {
             Picker(selection: self.$pendingQuickAction, label: EmptyView()) {
                 ForEach(GuessData.QuickAction.allCases, id: \.self) { menu in
                     Text(LocalizedStringKey(menu.rawValue)).tag(menu)
-                        .font(.system(Font.TextStyle.headline, design: Font.Design.rounded))
-                    .lineLimit(nil)
+                        .font(.system(.headline, design: .rounded))
+                        .scaleToFitLine()
                 }
             }
             
@@ -388,6 +407,7 @@ struct UpperRangeSettingsView: View {
                 Text("\(self.pendingUpperRange.formatted())")
                     .font(.system(size: 22, weight: .medium, design: .rounded))
                     .frame(width: geo.size.width, height: (geo.size.height - 12) / 5)
+                    .scaleToFitLine()
                     .simultaneousGesture(DragGesture().onEnded({ value in
                         if value.translation.width < 0 {
                             self.pendingUpperRange /= 10
@@ -398,14 +418,14 @@ struct UpperRangeSettingsView: View {
                     HStack(spacing: 3) {
                         ForEach(0 ..< 3) { col in
                             Button(action: {
-                                if !(self.pendingUpperRange >= 100000) {
+                                if !(self.pendingUpperRange >= 100000000) {
                                     self.pendingUpperRange *= 10
                                     self.pendingUpperRange += (row * 3 + col + 1)
                                 }
                             }, label: {
                                 Text("\((row * 3 + col + 1).formatted())")
                             })
-                                .opacity(self.pendingUpperRange >= 100000 ? 0.5 : 1)
+                                .opacity(self.pendingUpperRange >= 100000000 ? 0.5 : 1)
                                 .buttonStyle(PlainButtonStyle())
                                 .frame(width: (geo.size.width - 6) / 3, height: (geo.size.height - 12) / 5)
                                 .background(Color(red: 34.0 / 255.0, green: 34.0 / 255.0, blue: 35.0 / 255.0))
@@ -440,13 +460,13 @@ struct UpperRangeSettingsView: View {
                         })
                     
                     Button(action: {
-                        if !(self.pendingUpperRange >= 100000 || self.pendingUpperRange == 0) {
+                        if !(self.pendingUpperRange >= 100000000 || self.pendingUpperRange == 0) {
                             self.pendingUpperRange *= 10
                         }
                     }, label: {
                         Text("\(0.formatted())")
                     })
-                        .opacity(self.pendingUpperRange >= 100000 || self.pendingUpperRange == 0 ? 0.5 : 1)
+                        .opacity(self.pendingUpperRange >= 100000000 || self.pendingUpperRange == 0 ? 0.5 : 1)
                         .buttonStyle(PlainButtonStyle())
                         .frame(width: (geo.size.width - 6) / 3, height: (geo.size.height - 12) / 5)
                         .background(Color(red: 34.0 / 255.0, green: 34.0 / 255.0, blue: 35.0 / 255.0))
