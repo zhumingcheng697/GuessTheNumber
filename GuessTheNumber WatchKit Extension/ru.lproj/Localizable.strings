@@ -17,6 +17,8 @@
 
 "Guess a number between 0 and %@" = "Угадайте число от 0 до %@";
 
+"Set the upper range lower than %@ to play" = "Установите предел число меньше %@, чтобы играть";
+
 "Confirm" = "Подтвердить";
 
 "Yay" = "Ура";
@@ -82,6 +84,8 @@
 "Upper Range" = "Предел";
 
 "Use Hex Value for Colors" = "Показать Цвет в Hex Значении";
+
+"“Let Me Guess” only supports numbers lower than %@" = "«Угадаю» только поддерживает числа меньше %@";
 
 "None" = "Никакая";
 

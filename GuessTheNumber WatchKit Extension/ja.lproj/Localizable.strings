@@ -17,6 +17,8 @@
 
 "Guess a number between 0 and %@" = "0から%@までの数を推測してください";
 
+"Set the upper range lower than %@ to play" = "プレイするには、上限を%@より小さい数に設定してください";
+
 "Confirm" = "確認";
 
 "Yay" = "やった";
@@ -82,6 +84,8 @@
 "Upper Range" = "上限";
 
 "Use Hex Value for Colors" = "色に16進値を使用";
+
+"“Let Me Guess” only supports numbers lower than %@" = "「私は推測する」は%@より小さい数のみをサポートします";
 
 "None" = "無し";
 

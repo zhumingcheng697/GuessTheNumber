@@ -17,6 +17,8 @@
 
 "Guess a number between 0 and %@" = "Guess a number between 0 and %@";
 
+"Set the upper range lower than %@ to play" = "Set the upper range lower than %@ to play";
+
 "Confirm" = "Confirm";
 
 "Yay" = "Yay";
@@ -82,6 +84,8 @@
 "Upper Range" = "Upper Range";
 
 "Use Hex Value for Colors" = "Use Hex Value for Colors";
+
+"“Let Me Guess” only supports numbers lower than %@" = "“Let Me Guess” only supports numbers lower than %@";
 
 "None" = "None";
 

@@ -17,6 +17,8 @@
 
 "Guess a number between 0 and %@" = "在0到%@裡猜一個數字";
 
+"Set the upper range lower than %@ to play" = "將上界設為%@以下再猜";
+
 "Confirm" = "確認";
 
 "Yay" = "耶";
@@ -82,6 +84,8 @@
 "Upper Range" = "上界";
 
 "Use Hex Value for Colors" = "使用十六進製表示顏色";
+
+"“Let Me Guess” only supports numbers lower than %@" = "「讓我來猜」僅支持小於%@的數字";
 
 "None" = "無";
 
