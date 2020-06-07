@@ -79,11 +79,11 @@
 
 "Quick Action" = "ショートカット";
 
-"Upper Range for Numbers" = "数値の上限";
+"Upper Range for Numbers" = "数の上限";
 
 "Upper Range" = "上限";
 
-"Use Hex Value for Colors" = "色に16進値を使用";
+"Use Hex Value for Colors" = "16進形式で色を表示";
 
 "“Let Me Guess” only supports numbers lower than %@" = "「私は推測する」は%@より小さい数のみをサポートします";
 
