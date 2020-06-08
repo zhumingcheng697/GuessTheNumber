@@ -7,6 +7,7 @@
 //
 
 import SwiftUI
+import WatchKit
 
 extension Int {
     func formatted() -> String {
@@ -44,12 +45,14 @@ struct UserGuessingView: View {
                         withAnimation {
                             self.data.userGuessedNumber = 0
                         }
+                        WKInterfaceDevice.current().play(.click)
                     }, label: {
                         Text("Ready")
                     })
                 } else {
                     Button(action: {
                         self.data.isUserGuessing = false
+                        WKInterfaceDevice.current().play(.click)
                     }, label: {
                         Text("OK")
                     })
@@ -57,7 +60,7 @@ struct UserGuessingView: View {
             } else {
                 Picker(selection: self.$data.userGuessedNumber, label: EmptyView()) {
                     ForEach(0 ..< self.data.upperRange + 1) { index in
-                        Text(index.formatted())
+                        Text(index.formatted()).tag(index)
                             .font(.system(size: 22, weight: .medium, design: .rounded))
                             .scaleToFitLine()
                     }
@@ -67,13 +70,18 @@ struct UserGuessingView: View {
                     self.data.showCompareResult = true
                     self.data.userGuessedTimes += 1
                     self.data.userLastCheckedNumber = self.data.userGuessedNumber
+                    if self.data.userGotCorrectNumber {
+                        WKInterfaceDevice.current().play(.success)
+                    } else {
+                        WKInterfaceDevice.current().play(.click)
+                    }
                 }, label: {
                     Text("Confirm")
                 })
             }
         }.navigationBarTitle(Text("Let Me Guess"))
         .alert(isPresented: self.$data.showCompareResult, content: {
-            if self.data.userGuessedNumber == self.data.userGuessingCorrectNumber && self.data.userLastCheckedNumber == self.data.userGuessedNumber {
+            if self.data.userGotCorrectNumber {
                 return Alert(title: Text("Yay"), message: Text("You get the number (\(self.data.userGuessingCorrectNumber.formatted())) in \(self.data.userGuessedTimes.formatted()) \(self.data.userGuessedTimes, specifier: "%d")!"), primaryButton: .default(Text("Quit"), action: {
                     if self.data.askWhenUserGuessing {
                         self.data.autoRedirect()
@@ -125,6 +133,7 @@ struct AiGuessingView: View {
                     withAnimation {
                         self.data.aiGuessedTimes += 1
                     }
+                    WKInterfaceDevice.current().play(.click)
                 }, label: {
                     Text("Ready")
                 })
@@ -142,6 +151,7 @@ struct AiGuessingView: View {
                             VStack(spacing: 5) {
                                 Button(action: {
                                     self.data.hasAiWon = true
+                                    WKInterfaceDevice.current().play(.success)
                                 }, label: {
                                     Text("Correct")
                                 })
@@ -248,6 +258,7 @@ struct RandomNumberView: View {
             
             Button(action: {
                 self.data.resetRandomNumber()
+                WKInterfaceDevice.current().play(.click)
             }, label: {
                 Text("Randomize")
             })
@@ -269,6 +280,7 @@ struct RandomColorView: View {
             Button(action: {
                 self.data.usingHex.toggle()
                 UserDefaults.standard.set(self.data.usingHex, forKey: "userPrefersUsingHex")
+                WKInterfaceDevice.current().play(.click)
             }, label: {
                 ZStack {
                     Rectangle()
@@ -285,6 +297,7 @@ struct RandomColorView: View {
                 withAnimation {
                     self.data.resetRandomColor()
                 }
+                WKInterfaceDevice.current().play(.click)
             }, label: {
                 Text("Randomize")
             })
@@ -312,6 +325,7 @@ struct RandomBooleanView: View {
             
             Button(action: {
                 self.data.resetRandomBoolean()
+                WKInterfaceDevice.current().play(.click)
             }, label: {
                 Text("Randomize")
             })
@@ -388,6 +402,7 @@ struct QuickActionSettingsView: View {
                 self.data.isEditingQuickAction = false
                 self.data.quickAction = self.pendingQuickAction
                 UserDefaults.standard.set(self.pendingQuickAction.rawValue, forKey: "userSetQuickAction")
+                WKInterfaceDevice.current().play(.click)
             }, label: {
                 Text("Done")
             })
@@ -406,9 +421,13 @@ struct UpperRangeSettingsView: View {
                     .font(.system(size: 22, weight: .medium, design: .rounded))
                     .frame(width: geo.size.width, height: (geo.size.height - 12) / 5)
                     .scaleToFitLine()
+                    .background(Color.black)
                     .simultaneousGesture(DragGesture().onEnded({ value in
                         if value.translation.width < 0 {
                             self.pendingUpperRange /= 10
+                            if self.pendingUpperRange == 0 {
+                                WKInterfaceDevice.current().play(.click)
+                            }
                         }
                     }))
                 
@@ -422,12 +441,14 @@ struct UpperRangeSettingsView: View {
                                 }
                             }, label: {
                                 Text("\((row * 3 + col + 1).formatted())")
-                            })
-                                .opacity(self.pendingUpperRange >= 100000000 ? 0.5 : 1)
-                                .buttonStyle(PlainButtonStyle())
-                                .frame(width: (geo.size.width - 6) / 3, height: (geo.size.height - 12) / 5)
-                                .background(Color(red: 34.0 / 255.0, green: 34.0 / 255.0, blue: 35.0 / 255.0))
-                                .cornerRadius(5)
+                                    .font(.system(.title, design: .rounded))
+                                    .fontWeight(.medium)
+                                    .scaleEffect(0.6)
+                                    .opacity(self.pendingUpperRange >= 100000000 ? 0.5 : 1)
+                                    .frame(width: (geo.size.width - 6) / 3, height: (geo.size.height - 12) / 5)
+                                    .background(Color(red: 34.0 / 255.0, green: 34.0 / 255.0, blue: 35.0 / 255.0))
+                                    .cornerRadius(5)
+                            }).buttonStyle(PlainButtonStyle())
                         }
                     }
                 }
@@ -435,25 +456,28 @@ struct UpperRangeSettingsView: View {
                 HStack(spacing: 3) {
                     Button(action: {
                         if self.pendingUpperRange <= 1023 {
-                            self.data.resetUpperRange(self.pendingUpperRange)
+                            self.data.resetUpperRange(self.pendingUpperRange, shouldStore: true)
                             self.data.isEditingUpperRange = false
-                            UserDefaults.standard.set(self.pendingUpperRange, forKey: "userSetUpperRange")
+                            WKInterfaceDevice.current().play(.click)
                         } else {
                             self.data.warnUpperRange = true
+                            WKInterfaceDevice.current().play(.retry)
                         }
                     }, label: {
                         Text(verbatim: "OK")
-                            .font(.system(.headline, design: .rounded))
+                            .font(.system(.title, design: .rounded))
+                            .fontWeight(.semibold)
+                            .scaleEffect(0.6)
                             .foregroundColor(.green)
+                            .frame(width: (geo.size.width - 6) / 3, height: (geo.size.height - 12) / 5)
+                            .background(Color.black)
                     })
                         .disabled(self.pendingUpperRange == 0)
                         .buttonStyle(PlainButtonStyle())
-                        .frame(width: (geo.size.width - 6) / 3, height: (geo.size.height - 12) / 5)
                         .alert(isPresented: self.$data.warnUpperRange, content: {
                             Alert(title: Text("“Let Me Guess” only supports numbers lower than \(1024.formatted())"), primaryButton: .cancel(Text("OK"), action: {
-                                self.data.resetUpperRange(self.pendingUpperRange)
+                                self.data.resetUpperRange(self.pendingUpperRange, shouldStore: true)
                                 self.data.isEditingUpperRange = false
-                                UserDefaults.standard.set(self.pendingUpperRange, forKey: "userSetUpperRange")
                             }), secondaryButton: .cancel())
                         })
                     
@@ -463,25 +487,36 @@ struct UpperRangeSettingsView: View {
                         }
                     }, label: {
                         Text("\(0.formatted())")
-                    })
-                        .opacity(self.pendingUpperRange >= 100000000 || self.pendingUpperRange == 0 ? 0.5 : 1)
-                        .buttonStyle(PlainButtonStyle())
-                        .frame(width: (geo.size.width - 6) / 3, height: (geo.size.height - 12) / 5)
-                        .background(Color(red: 34.0 / 255.0, green: 34.0 / 255.0, blue: 35.0 / 255.0))
-                        .cornerRadius(5)
+                            .font(.system(.title, design: .rounded))
+                            .fontWeight(.medium)
+                            .scaleEffect(0.6)
+                            .opacity(self.pendingUpperRange >= 100000000 || self.pendingUpperRange == 0 ? 0.5 : 1)
+                            .frame(width: (geo.size.width - 6) / 3, height: (geo.size.height - 12) / 5)
+                            .background(Color(red: 34.0 / 255.0, green: 34.0 / 255.0, blue: 35.0 / 255.0))
+                            .cornerRadius(5)
+                    }).buttonStyle(PlainButtonStyle())
                     
                     Button(action: {
                         self.pendingUpperRange /= 10
+                        if self.pendingUpperRange == 0 {
+                            WKInterfaceDevice.current().play(.click)
+                        }
                     }, label: {
                         Image(systemName: "delete.left.fill")
+                            .font(.title)
+                            .scaleEffect(0.51)
                             .foregroundColor(.red)
+                            .frame(width: (geo.size.width - 6) / 3, height: (geo.size.height - 12) / 5)
+                            .background(Color.black)
                     })
                         .disabled(self.pendingUpperRange == 0)
                         .buttonStyle(PlainButtonStyle())
-                        .simultaneousGesture(LongPressGesture(minimumDuration: 0.5).onEnded({ _ in
-                            self.pendingUpperRange = 0
+                        .simultaneousGesture(LongPressGesture(minimumDuration: 0.4).onEnded({ _ in
+                            if self.pendingUpperRange != 0 {
+                                self.pendingUpperRange = 0
+                                WKInterfaceDevice.current().play(.click)
+                            }
                         }))
-                        .frame(width: (geo.size.width - 6) / 3, height: (geo.size.height - 12) / 5)
                 }
             }.navigationBarTitle(Text("Upper Range"))
         }

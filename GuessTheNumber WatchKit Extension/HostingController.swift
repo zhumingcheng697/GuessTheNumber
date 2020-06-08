@@ -54,6 +54,10 @@ final class GuessData: ObservableObject {
         case randomBoolean = "Random Boolean"
     }
     
+    var userGotCorrectNumber: Bool {
+        return self.userGuessedNumber == self.userGuessingCorrectNumber && self.userLastCheckedNumber == self.userGuessedNumber
+    }
+    
     func wasUserGuessing() -> Bool {
         return (self.isUserGuessing && self.userGuessedNumber != -1)
     }
@@ -62,11 +66,14 @@ final class GuessData: ObservableObject {
         return (self.isAiGuessing && self.aiGuessedTimes > 0)
     }
     
-    func resetUpperRange(_ resetUpperRange: Int) {
+    func resetUpperRange(_ resetUpperRange: Int, shouldStore: Bool = false) {
         self.upperRange = resetUpperRange
         self.aiGuessingUpperLimit = resetUpperRange
         self.aiGuessedNumber = Int((0 + resetUpperRange + Int.random(in: 0 ... 1)) / 2)
         self.randomNumber = Int.random(in: 0 ..< resetUpperRange + 1)
+        if shouldStore {
+            UserDefaults.standard.set(resetUpperRange, forKey: "userSetUpperRange")
+        }
     }
     
     func resetViews(resetAlerts: Bool = true) {

@@ -11,6 +11,7 @@ import Intents
 import Foundation
 
 class ExtensionDelegate: NSObject, WKExtensionDelegate {
+    var shouldPlaySfx = false
     
     enum ReopenDestination: String {
         case userGuessing, aiGuessing, randomizeNumber, randomizeColor, randomizeBoolean
@@ -38,8 +39,10 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
             if guessData.tryRestoreUserGuessingStatus() {
                 guessData.showCompareResult = true
                 guessData.askWhenUserGuessing = true
+                shouldPlaySfx = true
             } else if guessData.tryRestoreAiGuessingStatus() {
                 guessData.askWhenAiGuessing = true
+                shouldPlaySfx = true
             } else {
                 guessData.autoRedirect()
             }
@@ -69,6 +72,12 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
         
         guessData.tryRestoreUserGuessingStatus()
         guessData.tryRestoreAiGuessingStatus()
+        
+        if shouldPlaySfx && (guessData.showCompareResult && guessData.askWhenUserGuessing && !guessData.userGotCorrectNumber || guessData.askWhenAiGuessing && !guessData.hasAiWon) {
+            WKInterfaceDevice.current().play(.retry)
+        }
+        
+        shouldPlaySfx = false
     }
 
     func applicationWillResignActive() {
