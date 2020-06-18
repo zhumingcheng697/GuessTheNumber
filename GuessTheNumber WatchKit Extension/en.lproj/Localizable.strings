@@ -35,9 +35,9 @@
 
 "Choose a number between 0 and %@" = "Choose a number between 0 and %@";
 
-"It is %@!" = "     It is %@!     ";
+"It is %@!" = "It is %@!";
 
-"Is it %@?" = "     Is it %@?     ";
+"Is it %@?" = "Is it %@?";
 
 "Correct" = "Correct";
 
