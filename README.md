@@ -6,7 +6,7 @@ GuessTheNumber is a currently standalone watchOS app that allows the user to gue
 
 ## Installation
 
-Download [GuessTheNumber](https://apps.apple.com/app/guessthenumber-by-mccoy-zhu/id1513747066) on the App Store on your iPhone and wait for it to be loaded onto your Apple Watch, **OR**, Search for and download GuessTheNumber directly on the App Store on your Apple Watch.
+Download [GuessTheNumber](https://apps.apple.com/app/id1513747066) on the App Store on your iPhone and wait for it to be loaded onto your Apple Watch, **OR**, Search for and download GuessTheNumber directly on the App Store on your Apple Watch.
 
 ## Privacy
 
