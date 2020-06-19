@@ -422,9 +422,21 @@ struct UpperRangeSettingsView: View {
                     .frame(width: geo.size.width, height: (geo.size.height - 12) / 5)
                     .scaleToFitLine()
                     .background(Color.black)
+                    .onLongPressGesture(minimumDuration: 0.4) {
+                        let previousUpperRange = UserDefaults.standard.integer(forKey: "userSetUpperRange")
+                        if previousUpperRange != 0 {
+                            WKInterfaceDevice.current().play(.click)
+                            self.pendingUpperRange = previousUpperRange
+                        }
+                    }
                     .simultaneousGesture(DragGesture().onEnded({ value in
                         if value.translation.width < 0 {
-                            self.pendingUpperRange /= 10
+                            if -value.translation.width < geo.size.width * 0.6 {
+                                self.pendingUpperRange /= 10
+                            } else {
+                                self.pendingUpperRange = 0
+                            }
+                            
                             if self.pendingUpperRange == 0 {
                                 WKInterfaceDevice.current().play(.click)
                             }
@@ -443,7 +455,7 @@ struct UpperRangeSettingsView: View {
                                 Text("\((row * 3 + col + 1).formatted())")
                                     .font(.system(.title, design: .rounded))
                                     .fontWeight(.medium)
-                                    .scaleEffect(0.6)
+                                    .scaleEffect(0.69)
                                     .opacity(self.pendingUpperRange >= 100000000 ? 0.5 : 1)
                                     .frame(width: (geo.size.width - 6) / 3, height: (geo.size.height - 12) / 5)
                                     .background(Color(red: 34.0 / 255.0, green: 34.0 / 255.0, blue: 35.0 / 255.0))
@@ -467,7 +479,7 @@ struct UpperRangeSettingsView: View {
                         Text(verbatim: "OK")
                             .font(.system(.title, design: .rounded))
                             .fontWeight(.semibold)
-                            .scaleEffect(0.6)
+                            .scaleEffect(0.65)
                             .foregroundColor(.green)
                             .frame(width: (geo.size.width - 6) / 3, height: (geo.size.height - 12) / 5)
                             .background(Color.black)
@@ -489,7 +501,7 @@ struct UpperRangeSettingsView: View {
                         Text("\(0.formatted())")
                             .font(.system(.title, design: .rounded))
                             .fontWeight(.medium)
-                            .scaleEffect(0.6)
+                            .scaleEffect(0.69)
                             .opacity(self.pendingUpperRange >= 100000000 || self.pendingUpperRange == 0 ? 0.5 : 1)
                             .frame(width: (geo.size.width - 6) / 3, height: (geo.size.height - 12) / 5)
                             .background(Color(red: 34.0 / 255.0, green: 34.0 / 255.0, blue: 35.0 / 255.0))
@@ -504,7 +516,7 @@ struct UpperRangeSettingsView: View {
                     }, label: {
                         Image(systemName: "delete.left.fill")
                             .font(.title)
-                            .scaleEffect(0.51)
+                            .scaleEffect(0.53)
                             .foregroundColor(.red)
                             .frame(width: (geo.size.width - 6) / 3, height: (geo.size.height - 12) / 5)
                             .background(Color.black)
@@ -519,7 +531,7 @@ struct UpperRangeSettingsView: View {
                         }))
                 }
             }.navigationBarTitle(Text("Upper Range"))
-        }
+        }.edgesIgnoringSafeArea(.bottom)
     }
 }
 
