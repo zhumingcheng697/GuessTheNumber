@@ -18,7 +18,7 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
     }
     
     func handle(_ userActivity: NSUserActivity) {
-        if let reopenTo = ReopenDestination(rawValue: userActivity.userInfo?["reopenTo"] as? String ?? "") {
+        if UserDefaults.standard.string(forKey: "LastRunVersion") == Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String && UserDefaults.standard.string(forKey: "LastRunBuild") == Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String, let reopenTo = ReopenDestination(rawValue: userActivity.userInfo?["reopenTo"] as? String ?? "") {
             switch reopenTo {
             case .userGuessing:
                 guessData.tryRestoreUserGuessingStatus()
@@ -35,7 +35,7 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
     }
     
     func handleUserActivity(_ userInfo: [AnyHashable : Any]?) {
-        if guessData.quickAction != .none {
+        if UserDefaults.standard.string(forKey: "LastRunVersion") == Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String && UserDefaults.standard.string(forKey: "LastRunBuild") == Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String && guessData.quickAction != .none {
             if guessData.tryRestoreUserGuessingStatus() {
                 guessData.showCompareResult = true
                 guessData.askWhenUserGuessing = true
@@ -78,6 +78,9 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
         }
         
         shouldPlaySfx = false
+        
+        UserDefaults.standard.set(Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString"), forKey: "LastRunVersion")
+        UserDefaults.standard.set(Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion"), forKey: "LastRunBuild")
     }
 
     func applicationWillResignActive() {
