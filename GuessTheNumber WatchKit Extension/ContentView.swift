@@ -37,7 +37,7 @@ struct UserGuessingView: View {
                 Text(self.data.upperRange <= 1023 ? "Guess a number between 0 and \(self.data.upperRange.formatted())" : "Set the upper range lower than \(1024.formatted()) to play")
                     .font(.headline)
                     .multilineTextAlignment(.center)
-
+                
                 Spacer()
                 
                 if self.data.upperRange <= 1023 {
@@ -126,7 +126,7 @@ struct AiGuessingView: View {
                 Text("Choose a number between 0 and \(self.data.upperRange.formatted())")
                     .font(.headline)
                     .multilineTextAlignment(.center)
-
+                
                 Spacer()
                 
                 Button(action: {
@@ -145,7 +145,7 @@ struct AiGuessingView: View {
                             
                             Text(self.data.aiGuessingLowerLimit == self.data.aiGuessingUpperLimit ? "It is \(self.data.aiGuessedNumber.formatted())!" : "Is it \(self.data.aiGuessedNumber.formatted())?")
                                 .scaleToFitLine()
-
+                            
                             Spacer()
                             
                             VStack(spacing: 5) {
@@ -154,9 +154,8 @@ struct AiGuessingView: View {
                                     WKInterfaceDevice.current().play(.success)
                                 }, label: {
                                     Text("Correct")
-                                })
-                                    .accentColor(.green)
-                            
+                                }).accentColor(.green)
+                                
                                 if self.data.aiGuessingLowerLimit != self.data.aiGuessedNumber {
                                     Button(action: {
                                         self.data.aiGuessedTimes += 1
@@ -318,8 +317,8 @@ struct RandomBooleanView: View {
                 
                 Image(systemName: self.data.randomDouble >= 0 ? (locale.languageCode == "ja" ? "circle" : "checkmark") : "xmark")
             }
-                .font(.system(.largeTitle, design: .rounded))
-                .foregroundColor(self.data.randomDouble >= 0 ? (locale.languageCode == "ja" ? .red : .green) : (locale.languageCode == "ja" ? .blue : .red))
+            .font(.system(.largeTitle, design: .rounded))
+            .foregroundColor(self.data.randomDouble >= 0 ? (locale.languageCode == "ja" ? .red : .green) : (locale.languageCode == "ja" ? .blue : .red))
             
             Spacer()
             
@@ -346,8 +345,7 @@ struct SettingsView: View {
                         .font(.caption)
                         .foregroundColor(.gray)
                 }
-            })
-                .padding(.vertical)
+            }).padding(.vertical)
             
             NavigationLink(destination: UpperRangeSettingsView(pendingUpperRange: self.data.upperRange), isActive: self.$data.isEditingUpperRange, label: {
                 if self.data.upperRange < 10000 {
@@ -367,19 +365,18 @@ struct SettingsView: View {
                             .foregroundColor(.gray)
                     }
                 }
-            })
-                .padding(.vertical)
-
+            }).padding(.vertical)
+            
             Toggle(isOn: self.$data.usingHex) {
                 Text("Use Hex Value for Colors")
             }
-                .padding(.vertical)
-                .onReceive([self.data.usingHex].publisher.first()) { _ in
-                    UserDefaults.standard.set(self.data.usingHex, forKey: "userPrefersUsingHex")}
-                .onTapGesture(perform: {
-                    self.data.usingHex.toggle()
-                    UserDefaults.standard.set(self.data.usingHex, forKey: "userPrefersUsingHex")
-                })
+            .padding(.vertical)
+            .onReceive([self.data.usingHex].publisher.first()) { _ in
+                UserDefaults.standard.set(self.data.usingHex, forKey: "userPrefersUsingHex")}
+            .onTapGesture(perform: {
+                self.data.usingHex.toggle()
+                UserDefaults.standard.set(self.data.usingHex, forKey: "userPrefersUsingHex")
+            })
         }.navigationBarTitle(Text("Settings"))
     }
 }
@@ -578,8 +575,8 @@ struct ContentView: View {
                         }
                     })
                 }
-                    .frame(minHeight: geo.size.height)
-                    .navigationBarTitle(Text("Guess"))
+                .frame(minHeight: geo.size.height)
+                .navigationBarTitle(Text("Guess"))
             }
         }
     }
