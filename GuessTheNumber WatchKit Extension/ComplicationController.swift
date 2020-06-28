@@ -52,17 +52,17 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
         // This method will be called once per supported complication, and the results will be cached
         
         switch complication.family {
-        case CLKComplicationFamily.circularSmall:
+        case .circularSmall:
             let tmpl = CLKComplicationTemplateCircularSmallSimpleImage()
             tmpl.imageProvider = CLKImageProvider(onePieceImage: UIImage(named: "Complication/Circular")!)
             handler(tmpl)
             
-        case CLKComplicationFamily.extraLarge:
+        case .extraLarge:
             let tmpl = CLKComplicationTemplateExtraLargeSimpleImage()
             tmpl.imageProvider = CLKImageProvider(onePieceImage: UIImage(named: "Complication/Extra Large")!)
             handler(tmpl)
             
-        case CLKComplicationFamily.graphicBezel:
+        case .graphicBezel:
             let circularTmpl = CLKComplicationTemplateGraphicCircularImage()
             circularTmpl.imageProvider = CLKFullColorImageProvider(fullColorImage: UIImage(named: "Complication/Graphic Bezel")!, tintedImageProvider: CLKImageProvider(onePieceImage: UIImage(named: "Complication/Graphic Bezel")!))
             let tmpl = CLKComplicationTemplateGraphicBezelCircularText()
@@ -70,34 +70,34 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
             tmpl.textProvider = CLKSimpleTextProvider(text: NSLocalizedString("Guess The Number", comment: ""), shortText:  NSLocalizedString("Guess", comment: ""))
             handler(tmpl)
             
-        case CLKComplicationFamily.graphicCircular:
+        case .graphicCircular:
             let tmpl = CLKComplicationTemplateGraphicCircularImage()
             tmpl.imageProvider = CLKFullColorImageProvider(fullColorImage: UIImage(named: "Complication/Graphic Circular")!, tintedImageProvider: CLKImageProvider(onePieceImage: UIImage(named: "Complication/Graphic Circular")!))
             handler(tmpl)
             
-        case CLKComplicationFamily.graphicCorner:
+        case .graphicCorner:
             let tmpl = CLKComplicationTemplateGraphicCornerTextImage()
             tmpl.imageProvider = CLKFullColorImageProvider(fullColorImage: UIImage(named: "Complication/Graphic Corner")!, tintedImageProvider: CLKImageProvider(onePieceImage: UIImage(named: "Complication/Graphic Corner")!))
             tmpl.textProvider = CLKSimpleTextProvider(text: NSLocalizedString("Guess The Number", comment: ""), shortText:  NSLocalizedString("Guess", comment: ""))
             handler(tmpl)
             
-        case CLKComplicationFamily.modularSmall:
+        case .modularSmall:
             let tmpl = CLKComplicationTemplateModularSmallSimpleImage()
             tmpl.imageProvider = CLKImageProvider(onePieceImage: UIImage(named: "Complication/Modular")!)
             handler(tmpl)
             
-        case CLKComplicationFamily.utilitarianSmall:
+        case .utilitarianSmall:
             let tmpl = CLKComplicationTemplateUtilitarianSmallSquare()
             tmpl.imageProvider = CLKImageProvider(onePieceImage: UIImage(named: "Complication/Utilitarian")!)
             handler(tmpl)
             
-        case CLKComplicationFamily.utilitarianSmallFlat:
+        case .utilitarianSmallFlat:
             let tmpl = CLKComplicationTemplateUtilitarianSmallFlat()
             tmpl.imageProvider = CLKImageProvider(onePieceImage: UIImage(named: "Utilitatian Flat")!)
             tmpl.textProvider = CLKSimpleTextProvider(text: NSLocalizedString("Guess The Number", comment: ""), shortText:  NSLocalizedString("Guess", comment: ""))
             handler(tmpl)
             
-        case CLKComplicationFamily.utilitarianLarge:
+        case .utilitarianLarge:
             let tmpl = CLKComplicationTemplateUtilitarianLargeFlat()
             tmpl.imageProvider = CLKImageProvider(onePieceImage: UIImage(named: "Utilitatian Flat")!)
             tmpl.textProvider = CLKSimpleTextProvider(text: NSLocalizedString("Guess The Number", comment: ""), shortText:  NSLocalizedString("Guess", comment: ""))
