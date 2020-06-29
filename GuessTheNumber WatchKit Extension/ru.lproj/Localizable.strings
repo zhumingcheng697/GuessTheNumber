@@ -13,6 +13,12 @@
 
 "Guess" = "Угадай";
 
+/* Multi-Complication Prompt */
+
+"GuessTheNumber now supports multiple complications" = "GuessTheNumber теперь поддерживает несколько расширений";
+
+"Choose you favorites and add them to your watch face!" = "Выберите любимые и добавьте их на Ваш циферблат!";
+
 /* Content View - User Guessing */
 
 "Guess a number between 0 and %@" = "Угадайте число от 0 до %@";

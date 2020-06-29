@@ -13,6 +13,12 @@
 
 "Guess" = "猜数字";
 
+/* Multi-Complication Prompt */
+
+"GuessTheNumber now supports multiple complications" = "GuessTheNumber 现已支持多个复杂功能";
+
+"Choose you favorites and add them to your watch face!" = "将您最爱的复杂功能添加到您的表盘上吧！";
+
 /* Content View - User Guessing */
 
 "Guess a number between 0 and %@" = "在0到%@里猜一个数字";

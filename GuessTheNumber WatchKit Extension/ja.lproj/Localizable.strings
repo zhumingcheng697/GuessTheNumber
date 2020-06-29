@@ -13,6 +13,12 @@
 
 "Guess" = "数を推測";
 
+/* Multi-Complication Prompt */
+
+"GuessTheNumber now supports multiple complications" = "GuessTheNumberは複数のコンプリケーションをサポートします";
+
+"Choose you favorites and add them to your watch face!" = "お気に入りを選択して文字盤に追加しましょう！";
+
 /* Content View - User Guessing */
 
 "Guess a number between 0 and %@" = "0から%@までの数を推測してください";

@@ -13,6 +13,12 @@
 
 "Guess" = "Guess";
 
+/* Multi-Complication Prompt */
+
+"GuessTheNumber now supports multiple complications" = "GuessTheNumber now supports multiple complications";
+
+"Choose you favorites and add them to your watch face!" = "Choose you favorites and add them to your watch face!";
+
 /* Content View - User Guessing */
 
 "Guess a number between 0 and %@" = "Guess a number between 0 and %@";
