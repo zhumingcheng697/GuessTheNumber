@@ -13,6 +13,8 @@
 
 "Guess" = "数を推測";
 
+"Open App" = "Appを開く";
+
 /* Multi-Complication Prompt */
 
 "GuessTheNumber now supports multiple complications" = "GuessTheNumberは複数のコンプリケーションをサポートします";

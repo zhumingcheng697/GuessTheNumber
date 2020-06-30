@@ -13,6 +13,8 @@
 
 "Guess" = "猜數字";
 
+"Open App" = "打開 App";
+
 /* Multi-Complication Prompt */
 
 "GuessTheNumber now supports multiple complications" = "GuessTheNumber 現已支持多個複雜功能";
