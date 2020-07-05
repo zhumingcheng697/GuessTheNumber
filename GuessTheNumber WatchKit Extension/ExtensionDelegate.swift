@@ -78,9 +78,6 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
         }
         
         shouldPlaySfx = false
-        
-        UserDefaults.standard.set(Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString"), forKey: "LastRunVersion")
-        UserDefaults.standard.set(Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion"), forKey: "LastRunBuild")
     }
 
     func applicationWillResignActive() {
@@ -145,6 +142,9 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
         INRelevantShortcutStore.default.setRelevantShortcuts([relevantShortcut], completionHandler: { error in
             UserDefaults.standard.set(error == nil, forKey: "relevantShortcutAdded")
         })
+        
+        UserDefaults.standard.set(Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString"), forKey: "LastRunVersion")
+        UserDefaults.standard.set(Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion"), forKey: "LastRunBuild")
     }
 
     func handle(_ backgroundTasks: Set<WKRefreshBackgroundTask>) {
