@@ -79,13 +79,13 @@ final class GuessData: ObservableObject {
     func resetViews(resetAlerts: Bool = true) {
         self.isUserGuessing = false
         self.isAiGuessing = false
-        self.isInRandomizer = false
         self.isRandomizingNumber = false
         self.isRandomizingColor = false
         self.isRandomizingBoolean = false
-        self.isInSettings = false
+        self.isInRandomizer = false
         self.isEditingQuickAction = false
         self.isEditingUpperRange = false
+        self.isInSettings = false
         if resetAlerts {
             self.showCompareResult = false
             self.hasAiWon = false
@@ -218,21 +218,27 @@ final class GuessData: ObservableObject {
     }
     
     func autoRedirect(reset: Bool = true) {
-        switch self.quickAction {
-        case .letMeGuess:
-            self.launchUserGuessing(reset: reset)
-        case .letAiGuess:
-            self.launchAiGuessing(reset: reset)
-        case .randomizer:
-            self.launchRandomizer()
-        case .randomNumber:
-            self.launchRandomNumber()
-        case .randomColor:
-            self.launchRandomColor()
-        case .randomBoolean:
-            self.launchRandomBoolean()
-        default:
-            break
+        if WKExtension.shared().applicationState == .active {
+            switch self.quickAction {
+                case .letMeGuess:
+                    self.launchUserGuessing(reset: reset)
+                case .letAiGuess:
+                    self.launchAiGuessing(reset: reset)
+                case .randomizer:
+                    self.launchRandomizer()
+                case .randomNumber:
+                    self.launchRandomNumber()
+                case .randomColor:
+                    self.launchRandomColor()
+                case .randomBoolean:
+                    self.launchRandomBoolean()
+                default:
+                    break
+            }
+        } else {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
+                self.autoRedirect()
+            }
         }
     }
 }

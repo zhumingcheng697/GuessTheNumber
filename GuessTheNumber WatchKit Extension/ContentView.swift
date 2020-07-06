@@ -407,127 +407,137 @@ struct QuickActionSettingsView: View {
     }
 }
 
+struct UpperRangeKeyboard: View {
+    @EnvironmentObject var data: GuessData
+    @Binding var pendingUpperRange: Int
+    @State var geo: GeometryProxy
+    
+    var body: some View {
+        VStack(spacing: 3) {
+            Text("\(self.pendingUpperRange.formatted())")
+                .font(.system(size: 22, weight: .medium, design: .rounded))
+                .frame(width: self.geo.size.width, height: (self.geo.size.height - 12) / 5)
+                .scaleToFitLine()
+                .background(Color.black)
+                .onLongPressGesture(minimumDuration: 0.4) {
+                    let previousUpperRange = UserDefaults.standard.integer(forKey: "userSetUpperRange")
+                    if previousUpperRange != 0 {
+                        WKInterfaceDevice.current().play(.click)
+                        self.pendingUpperRange = previousUpperRange
+                    }
+                }
+                .simultaneousGesture(DragGesture().onEnded({ value in
+                    if value.translation.width < 0 {
+                        if -value.translation.width < self.geo.size.width * 0.6 {
+                            self.pendingUpperRange /= 10
+                        } else {
+                            self.pendingUpperRange = 0
+                        }
+                        
+                        if self.pendingUpperRange == 0 {
+                            WKInterfaceDevice.current().play(.click)
+                        }
+                    }
+                }))
+            
+            ForEach(0 ..< 3) { row in
+                HStack(spacing: 3) {
+                    ForEach(0 ..< 3) { col in
+                        Button(action: {
+                            if !(self.pendingUpperRange >= 100000000) {
+                                self.pendingUpperRange *= 10
+                                self.pendingUpperRange += (row * 3 + col + 1)
+                            }
+                        }, label: {
+                            Text("\((row * 3 + col + 1).formatted())")
+                                .font(.system(.title, design: .rounded))
+                                .fontWeight(.medium)
+                                .scaleEffect(0.69)
+                                .opacity(self.pendingUpperRange >= 100000000 ? 0.5 : 1)
+                                .frame(width: (self.geo.size.width - 6) / 3, height: (self.geo.size.height - 12) / 5)
+                                .background(Color(red: 34.0 / 255.0, green: 34.0 / 255.0, blue: 35.0 / 255.0))
+                                .cornerRadius(5)
+                        }).buttonStyle(PlainButtonStyle())
+                    }
+                }
+            }
+            
+            HStack(spacing: 3) {
+                Button(action: {
+                    if self.pendingUpperRange <= 1023 {
+                        self.data.resetUpperRange(self.pendingUpperRange, shouldStore: true)
+                        self.data.isEditingUpperRange = false
+                        WKInterfaceDevice.current().play(.click)
+                    } else {
+                        self.data.warnUpperRange = true
+                        WKInterfaceDevice.current().play(.retry)
+                    }
+                }, label: {
+                    Text(verbatim: "OK")
+                        .font(.system(.title, design: .rounded))
+                        .fontWeight(.semibold)
+                        .scaleEffect(0.65)
+                        .foregroundColor(.green)
+                        .frame(width: (self.geo.size.width - 6) / 3, height: (self.geo.size.height - 12) / 5)
+                        .background(Color.black)
+                })
+                    .disabled(self.pendingUpperRange == 0)
+                    .buttonStyle(PlainButtonStyle())
+                    .alert(isPresented: self.$data.warnUpperRange, content: {
+                        Alert(title: Text("“Let Me Guess” only supports numbers lower than \(1024.formatted())"), primaryButton: .cancel(Text("OK"), action: {
+                            self.data.resetUpperRange(self.pendingUpperRange, shouldStore: true)
+                            self.data.isEditingUpperRange = false
+                        }), secondaryButton: .cancel())
+                    })
+                
+                Button(action: {
+                    if !(self.pendingUpperRange >= 100000000 || self.pendingUpperRange == 0) {
+                        self.pendingUpperRange *= 10
+                    }
+                }, label: {
+                    Text("\(0.formatted())")
+                        .font(.system(.title, design: .rounded))
+                        .fontWeight(.medium)
+                        .scaleEffect(0.69)
+                        .opacity(self.pendingUpperRange >= 100000000 || self.pendingUpperRange == 0 ? 0.5 : 1)
+                        .frame(width: (self.geo.size.width - 6) / 3, height: (self.geo.size.height - 12) / 5)
+                        .background(Color(red: 34.0 / 255.0, green: 34.0 / 255.0, blue: 35.0 / 255.0))
+                        .cornerRadius(5)
+                }).buttonStyle(PlainButtonStyle())
+                
+                Button(action: {
+                    self.pendingUpperRange /= 10
+                    if self.pendingUpperRange == 0 {
+                        WKInterfaceDevice.current().play(.click)
+                    }
+                }, label: {
+                    Image(systemName: "delete.left.fill")
+                        .font(.title)
+                        .scaleEffect(0.53)
+                        .foregroundColor(.red)
+                        .frame(width: (self.geo.size.width - 6) / 3, height: (self.geo.size.height - 12) / 5)
+                        .background(Color.black)
+                })
+                    .disabled(self.pendingUpperRange == 0)
+                    .buttonStyle(PlainButtonStyle())
+                    .simultaneousGesture(LongPressGesture(minimumDuration: 0.4).onEnded({ _ in
+                        if self.pendingUpperRange != 0 {
+                            self.pendingUpperRange = 0
+                            WKInterfaceDevice.current().play(.click)
+                        }
+                    }))
+            }
+        }.navigationBarTitle(Text("Upper Range"))
+    }
+}
+
 struct UpperRangeSettingsView: View {
     @EnvironmentObject var data: GuessData
     @State var pendingUpperRange: Int
     
     var body: some View {
         GeometryReader { geo in
-            VStack(spacing: 3) {
-                Text("\(self.pendingUpperRange.formatted())")
-                    .font(.system(size: 22, weight: .medium, design: .rounded))
-                    .frame(width: geo.size.width, height: (geo.size.height - 12) / 5)
-                    .scaleToFitLine()
-                    .background(Color.black)
-                    .onLongPressGesture(minimumDuration: 0.4) {
-                        let previousUpperRange = UserDefaults.standard.integer(forKey: "userSetUpperRange")
-                        if previousUpperRange != 0 {
-                            WKInterfaceDevice.current().play(.click)
-                            self.pendingUpperRange = previousUpperRange
-                        }
-                    }
-                    .simultaneousGesture(DragGesture().onEnded({ value in
-                        if value.translation.width < 0 {
-                            if -value.translation.width < geo.size.width * 0.6 {
-                                self.pendingUpperRange /= 10
-                            } else {
-                                self.pendingUpperRange = 0
-                            }
-                            
-                            if self.pendingUpperRange == 0 {
-                                WKInterfaceDevice.current().play(.click)
-                            }
-                        }
-                    }))
-                
-                ForEach(0 ..< 3) { row in
-                    HStack(spacing: 3) {
-                        ForEach(0 ..< 3) { col in
-                            Button(action: {
-                                if !(self.pendingUpperRange >= 100000000) {
-                                    self.pendingUpperRange *= 10
-                                    self.pendingUpperRange += (row * 3 + col + 1)
-                                }
-                            }, label: {
-                                Text("\((row * 3 + col + 1).formatted())")
-                                    .font(.system(.title, design: .rounded))
-                                    .fontWeight(.medium)
-                                    .scaleEffect(0.69)
-                                    .opacity(self.pendingUpperRange >= 100000000 ? 0.5 : 1)
-                                    .frame(width: (geo.size.width - 6) / 3, height: (geo.size.height - 12) / 5)
-                                    .background(Color(red: 34.0 / 255.0, green: 34.0 / 255.0, blue: 35.0 / 255.0))
-                                    .cornerRadius(5)
-                            }).buttonStyle(PlainButtonStyle())
-                        }
-                    }
-                }
-                
-                HStack(spacing: 3) {
-                    Button(action: {
-                        if self.pendingUpperRange <= 1023 {
-                            self.data.resetUpperRange(self.pendingUpperRange, shouldStore: true)
-                            self.data.isEditingUpperRange = false
-                            WKInterfaceDevice.current().play(.click)
-                        } else {
-                            self.data.warnUpperRange = true
-                            WKInterfaceDevice.current().play(.retry)
-                        }
-                    }, label: {
-                        Text(verbatim: "OK")
-                            .font(.system(.title, design: .rounded))
-                            .fontWeight(.semibold)
-                            .scaleEffect(0.65)
-                            .foregroundColor(.green)
-                            .frame(width: (geo.size.width - 6) / 3, height: (geo.size.height - 12) / 5)
-                            .background(Color.black)
-                    })
-                        .disabled(self.pendingUpperRange == 0)
-                        .buttonStyle(PlainButtonStyle())
-                        .alert(isPresented: self.$data.warnUpperRange, content: {
-                            Alert(title: Text("“Let Me Guess” only supports numbers lower than \(1024.formatted())"), primaryButton: .cancel(Text("OK"), action: {
-                                self.data.resetUpperRange(self.pendingUpperRange, shouldStore: true)
-                                self.data.isEditingUpperRange = false
-                            }), secondaryButton: .cancel())
-                        })
-                    
-                    Button(action: {
-                        if !(self.pendingUpperRange >= 100000000 || self.pendingUpperRange == 0) {
-                            self.pendingUpperRange *= 10
-                        }
-                    }, label: {
-                        Text("\(0.formatted())")
-                            .font(.system(.title, design: .rounded))
-                            .fontWeight(.medium)
-                            .scaleEffect(0.69)
-                            .opacity(self.pendingUpperRange >= 100000000 || self.pendingUpperRange == 0 ? 0.5 : 1)
-                            .frame(width: (geo.size.width - 6) / 3, height: (geo.size.height - 12) / 5)
-                            .background(Color(red: 34.0 / 255.0, green: 34.0 / 255.0, blue: 35.0 / 255.0))
-                            .cornerRadius(5)
-                    }).buttonStyle(PlainButtonStyle())
-                    
-                    Button(action: {
-                        self.pendingUpperRange /= 10
-                        if self.pendingUpperRange == 0 {
-                            WKInterfaceDevice.current().play(.click)
-                        }
-                    }, label: {
-                        Image(systemName: "delete.left.fill")
-                            .font(.title)
-                            .scaleEffect(0.53)
-                            .foregroundColor(.red)
-                            .frame(width: (geo.size.width - 6) / 3, height: (geo.size.height - 12) / 5)
-                            .background(Color.black)
-                    })
-                        .disabled(self.pendingUpperRange == 0)
-                        .buttonStyle(PlainButtonStyle())
-                        .simultaneousGesture(LongPressGesture(minimumDuration: 0.4).onEnded({ _ in
-                            if self.pendingUpperRange != 0 {
-                                self.pendingUpperRange = 0
-                                WKInterfaceDevice.current().play(.click)
-                            }
-                        }))
-                }
-            }.navigationBarTitle(Text("Upper Range"))
+            UpperRangeKeyboard(pendingUpperRange: self.$pendingUpperRange, geo: geo)
         }.edgesIgnoringSafeArea(.bottom)
     }
 }
