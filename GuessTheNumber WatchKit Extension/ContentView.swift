@@ -8,6 +8,9 @@
 
 import SwiftUI
 import WatchKit
+import UIKit
+
+// MARK: - Extensions
 
 extension Int {
     func formatted() -> String {
@@ -25,6 +28,68 @@ extension View {
             .lineLimit(lineLimit ?? 1)
     }
 }
+
+extension UIImage {
+    func resized(to size: CGSize, scaleMode: ContentMode? = nil, autoScaleForGraphicComplication: Bool = false) -> UIImage? {
+        var finalSize: CGSize
+        
+        if scaleMode == nil {
+            finalSize = size
+        } else {
+            let widthScale = self.size.width / size.width
+            let heightScale = self.size.height / size.height
+            
+            if (scaleMode == ContentMode.fit && widthScale > heightScale) || (scaleMode == ContentMode.fill && widthScale < heightScale) {
+                finalSize = CGSize(width: size.width, height: self.size.height / widthScale)
+            } else {
+                finalSize = CGSize(width: self.size.width / heightScale, height: size.height)
+            }
+        }
+        
+        if autoScaleForGraphicComplication && self.isSymbolImage && (size == CGSize(width: 84 / 2, height: 84 / 2) && WKInterfaceDevice.current().screenBounds.size.width == 324 / 2 || size == CGSize(width: 94 / 2, height: 94 / 2) && WKInterfaceDevice.current().screenBounds.size.width == 368 / 2) {
+            finalSize = CGSize(width: finalSize.width * 0.72, height: finalSize.height * 0.72)
+        }
+        
+        UIGraphicsBeginImageContextWithOptions(size, false, 0.0)
+        self.draw(in: CGRect(x: (size.width - finalSize.width) / 2, y: (size.height - finalSize.height) / 2, width: finalSize.width, height: finalSize.height))
+        let newImage = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        return newImage
+    }
+    
+    func applyingTint(_ tintColor: UIColor) -> UIImage? {
+        UIGraphicsBeginImageContextWithOptions(self.size, false, self.scale)
+        tintColor.setFill()
+
+        let context = UIGraphicsGetCurrentContext()
+        context?.translateBy(x: 0, y: self.size.height)
+        context?.scaleBy(x: 1.0, y: -1.0)
+        context?.setBlendMode(CGBlendMode.normal)
+
+        let rect = CGRect(origin: .zero, size: CGSize(width: self.size.width, height: self.size.height))
+        context?.clip(to: rect, mask: self.cgImage!)
+        context?.fill(rect)
+
+        let newImage = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+
+        return newImage
+    }
+}
+
+extension Button {
+    func buttonTint(_ color: Color) -> some View {
+        Group {
+            if #available(watchOSApplicationExtension 7.0, *) {
+                self.buttonStyle(BorderedButtonStyle(tint: color))
+            } else {
+                self.accentColor(color)
+            }
+        }
+    }
+}
+
+// MARK: - User Guessing View
 
 struct UserGuessingView: View {
     @EnvironmentObject var data: GuessData
@@ -92,6 +157,7 @@ struct UserGuessingView: View {
                 }), secondaryButton: .default(Text("Restart"), action: {
                     self.data.resetUserGuessing()
                     self.data.askWhenUserGuessing = false
+                    currentAction = nil
                 }))
             } else if self.data.askWhenUserGuessing {
                 return Alert(title: Text("You have an unfinished game"), primaryButton: .default(Text("Quit"), action: {
@@ -99,6 +165,7 @@ struct UserGuessingView: View {
                     self.data.askWhenUserGuessing = false
                 }), secondaryButton: .default(Text("Resume"), action: {
                     self.data.askWhenUserGuessing = false
+                    currentAction = nil
                     if self.data.userLastCheckedNumber == self.data.userGuessedNumber {
                         self.data.userLastCheckedNumber = -1
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
@@ -114,6 +181,8 @@ struct UserGuessingView: View {
         })
     }
 }
+
+// MARK: - AI Guessing View
 
 struct AiGuessingView: View {
     @EnvironmentObject var data: GuessData
@@ -150,11 +219,12 @@ struct AiGuessingView: View {
                             
                             VStack(spacing: 5) {
                                 Button(action: {
+                                    self.data.showAiResult = true
                                     self.data.hasAiWon = true
                                     WKInterfaceDevice.current().play(.success)
                                 }, label: {
                                     Text("Correct")
-                                }).accentColor(.green)
+                                }).buttonTint(.green)
                                 
                                 if self.data.aiGuessingLowerLimit != self.data.aiGuessedNumber {
                                     Button(action: {
@@ -163,7 +233,7 @@ struct AiGuessingView: View {
                                         self.data.aiGuessedNumber = Int((self.data.aiGuessingLowerLimit + self.data.aiGuessingUpperLimit + Int.random(in: 0 ... 1)) / 2)
                                     }, label: {
                                         Text("Too High")
-                                    }).accentColor(.red)
+                                    }).buttonTint(.red)
                                 }
                                 
                                 if self.data.aiGuessingUpperLimit != self.data.aiGuessedNumber {
@@ -173,43 +243,49 @@ struct AiGuessingView: View {
                                         self.data.aiGuessedNumber = Int((self.data.aiGuessingLowerLimit + self.data.aiGuessingUpperLimit + Int.random(in: 0 ... 1)) / 2)
                                     }, label: {
                                         Text("Too Low")
-                                    }).accentColor(.red)
+                                    }).buttonTint(.red)
                                 }
                             }
                         }
                         .animation(.default)
                         .frame(minWidth: geo.size.width, minHeight: geo.size.height)
-                        .alert(isPresented: self.$data.askWhenAiGuessing, content: {
-                            Alert(title: Text("You have an unfinished game"), primaryButton: .default(Text("Quit"), action: {
-                                self.data.autoRedirect()
-                            }), secondaryButton: .default(Text("Resume")))
+                        .alert(isPresented: self.$data.showAiResult, content: {
+                            if self.data.hasAiWon {
+                                return Alert(title: Text("Hurray"), message: Text("AI gets the number (\(self.data.aiGuessedNumber.formatted())) in \(self.data.aiGuessedTimes.formatted()) \(self.data.aiGuessedTimes, specifier: "%d")!"), primaryButton: .default(Text("Quit"), action: {
+                                    if self.data.askWhenAiGuessing {
+                                        self.data.autoRedirect()
+                                    } else {
+                                        self.data.isAiGuessing = false
+                                    }
+                                    self.data.hasAiWon = false
+                                }), secondaryButton: .default(Text("Restart"), action: {
+                                    self.data.resetAiGuessing()
+                                    self.data.hasAiWon = false
+                                    currentAction = nil
+                                }))
+                            } else {
+                                return Alert(title: Text("You have an unfinished game"), primaryButton: .default(Text("Quit"), action: {
+                                    self.data.autoRedirect()
+                                }), secondaryButton: .default(Text("Resume"), action: {
+                                    currentAction = nil
+                                }))
+                            }
                         })
                     }
                 }
             }
         }.navigationBarTitle(Text("Let AI Guess"))
-        .alert(isPresented: self.$data.hasAiWon, content: {
-            Alert(title: Text("Hurray"), message: Text("AI gets the number (\(self.data.aiGuessedNumber.formatted())) in \(self.data.aiGuessedTimes.formatted()) \(self.data.aiGuessedTimes, specifier: "%d")!"), primaryButton: .default(Text("Quit"), action: {
-                if self.data.askWhenAiGuessing {
-                    self.data.autoRedirect()
-                    self.data.askWhenAiGuessing = false
-                } else {
-                    self.data.isAiGuessing = false
-                }
-            }), secondaryButton: .default(Text("Restart"), action: {
-                self.data.resetAiGuessing()
-                self.data.askWhenAiGuessing = false
-            }))
-        })
     }
 }
+
+// MARK: - Randomizer View
 
 struct RandomizerView: View {
     @EnvironmentObject var data: GuessData
     
     var body: some View {
         VStack(spacing: 5) {
-            NavigationLink(destination: RandomNumberView(), isActive: self.$data.isRandomizingNumber, label: {
+            NavigationLink(destination: RandomNumberView().environmentObject(guessData), isActive: self.$data.isRandomizingNumber, label: {
                 HStack {
                     Image(systemName: "textformat.123")
                         .imageScale(.large)
@@ -219,7 +295,7 @@ struct RandomizerView: View {
                 self.data.resetRandomNumber()
             })
             
-            NavigationLink(destination: RandomColorView(), isActive: self.$data.isRandomizingColor, label: {
+            NavigationLink(destination: RandomColorView().environmentObject(guessData), isActive: self.$data.isRandomizingColor, label: {
                 HStack {
                     Image(systemName: "paintbrush")
                         .imageScale(.large)
@@ -229,7 +305,7 @@ struct RandomizerView: View {
                 self.data.resetRandomColor()
             })
             
-            NavigationLink(destination: RandomBooleanView(), isActive: self.$data.isRandomizingBoolean, label: {
+            NavigationLink(destination: RandomBooleanView().environmentObject(guessData), isActive: self.$data.isRandomizingBoolean, label: {
                 HStack {
                     Image(systemName: "questionmark.circle")
                         .imageScale(.large)
@@ -241,6 +317,8 @@ struct RandomizerView: View {
         }.navigationBarTitle(Text("Randomizer"))
     }
 }
+
+// MARK: - Random Number View
 
 struct RandomNumberView: View {
     @EnvironmentObject var data: GuessData
@@ -264,6 +342,8 @@ struct RandomNumberView: View {
         }.navigationBarTitle(Text("Number"))
     }
 }
+
+// MARK: - Random Color View
 
 struct RandomColorView: View {
     @EnvironmentObject var data: GuessData
@@ -304,6 +384,8 @@ struct RandomColorView: View {
     }
 }
 
+// MARK: - Random Boolean View
+
 struct RandomBooleanView: View {
     @EnvironmentObject var data: GuessData
     @Environment(\.locale) var locale: Locale
@@ -332,22 +414,39 @@ struct RandomBooleanView: View {
     }
 }
 
+// MARK: - Settings View
+
 struct SettingsView: View {
     @EnvironmentObject var data: GuessData
     
     var body: some View {
         List {
-            NavigationLink(destination: QuickActionSettingsView(pendingQuickAction: self.data.quickAction), isActive: self.$data.isEditingQuickAction, label: {
-                VStack(alignment: .leading) {
-                    Text("Quick Action")
-                    
-                    Text(LocalizedStringKey(self.data.quickAction.rawValue))
-                        .font(.caption)
-                        .foregroundColor(.gray)
-                }
-            }).padding(.vertical)
+            if #available(watchOSApplicationExtension 7.0, *) {
+                Button(action: {
+                    self.data.promptMultiComplication = true
+                }, label: {
+                    HStack {
+                        Text("Quick Action")
+                        
+                        Spacer()
+                        
+                        Image(systemName: "info")
+                            .foregroundColor(.gray)
+                    }
+                }).padding(.vertical)
+            } else {
+                NavigationLink(destination: QuickActionSettingsView(pendingQuickAction: self.data.quickAction).environmentObject(guessData), isActive: self.$data.isEditingQuickAction, label: {
+                    VStack(alignment: .leading) {
+                        Text("Quick Action")
+                        
+                        Text(LocalizedStringKey(self.data.quickAction.rawValue))
+                            .font(.caption)
+                            .foregroundColor(.gray)
+                    }
+                }).padding(.vertical)
+            }
             
-            NavigationLink(destination: UpperRangeSettingsView(pendingUpperRange: self.data.upperRange), isActive: self.$data.isEditingUpperRange, label: {
+            NavigationLink(destination: UpperRangeSettingsView(pendingUpperRange: self.data.upperRange).environmentObject(guessData), isActive: self.$data.isEditingUpperRange, label: {
                 if self.data.upperRange < 10000 {
                     HStack {
                         Text("Upper Range for Numbers")
@@ -378,8 +477,13 @@ struct SettingsView: View {
                 UserDefaults.standard.set(self.data.usingHex, forKey: "userPrefersUsingHex")
             })
         }.navigationBarTitle(Text("Settings"))
+        .alert(isPresented: self.$data.promptMultiComplication) {
+            Alert(title: Text("GuessTheNumber now supports multiple complications"), message: Text("Choose you favorites and add them to your watch face!"), dismissButton: .default(Text("OK")))
+        }
     }
 }
+
+// MARK: - Quick Action Settings View
 
 struct QuickActionSettingsView: View {
     @EnvironmentObject var data: GuessData
@@ -407,16 +511,18 @@ struct QuickActionSettingsView: View {
     }
 }
 
+// MARK: - Upper Range Keyboard
+
 struct UpperRangeKeyboard: View {
     @EnvironmentObject var data: GuessData
     @Binding var pendingUpperRange: Int
-    @State var geo: GeometryProxy
+    @State var geoProxy: GeometryProxy
     
     var body: some View {
         VStack(spacing: 3) {
             Text("\(self.pendingUpperRange.formatted())")
                 .font(.system(size: 22, weight: .medium, design: .rounded))
-                .frame(width: self.geo.size.width, height: (self.geo.size.height - 12) / 5)
+                .frame(width: self.geoProxy.size.width, height: (self.geoProxy.size.height - 12) / 5)
                 .scaleToFitLine()
                 .background(Color.black)
                 .onLongPressGesture(minimumDuration: 0.4) {
@@ -428,7 +534,7 @@ struct UpperRangeKeyboard: View {
                 }
                 .simultaneousGesture(DragGesture().onEnded({ value in
                     if value.translation.width < 0 {
-                        if -value.translation.width < self.geo.size.width * 0.6 {
+                        if -value.translation.width < self.geoProxy.size.width * 0.7 {
                             self.pendingUpperRange /= 10
                         } else {
                             self.pendingUpperRange = 0
@@ -448,13 +554,16 @@ struct UpperRangeKeyboard: View {
                                 self.pendingUpperRange *= 10
                                 self.pendingUpperRange += (row * 3 + col + 1)
                             }
+                            if self.pendingUpperRange >= 100000000 {
+                                WKInterfaceDevice.current().play(.click)
+                            }
                         }, label: {
                             Text("\((row * 3 + col + 1).formatted())")
                                 .font(.system(.title, design: .rounded))
                                 .fontWeight(.medium)
                                 .scaleEffect(0.69)
                                 .opacity(self.pendingUpperRange >= 100000000 ? 0.5 : 1)
-                                .frame(width: (self.geo.size.width - 6) / 3, height: (self.geo.size.height - 12) / 5)
+                                .frame(width: (self.geoProxy.size.width - 6) / 3, height: (self.geoProxy.size.height - 12) / 5)
                                 .background(Color(red: 34.0 / 255.0, green: 34.0 / 255.0, blue: 35.0 / 255.0))
                                 .cornerRadius(5)
                         }).buttonStyle(PlainButtonStyle())
@@ -478,21 +587,24 @@ struct UpperRangeKeyboard: View {
                         .fontWeight(.semibold)
                         .scaleEffect(0.65)
                         .foregroundColor(.green)
-                        .frame(width: (self.geo.size.width - 6) / 3, height: (self.geo.size.height - 12) / 5)
+                        .frame(width: (self.geoProxy.size.width - 6) / 3, height: (self.geoProxy.size.height - 12) / 5)
                         .background(Color.black)
                 })
-                    .disabled(self.pendingUpperRange == 0)
-                    .buttonStyle(PlainButtonStyle())
-                    .alert(isPresented: self.$data.warnUpperRange, content: {
-                        Alert(title: Text("“Let Me Guess” only supports numbers lower than \(1024.formatted())"), primaryButton: .cancel(Text("OK"), action: {
-                            self.data.resetUpperRange(self.pendingUpperRange, shouldStore: true)
-                            self.data.isEditingUpperRange = false
-                        }), secondaryButton: .cancel())
-                    })
+                .disabled(self.pendingUpperRange == 0)
+                .buttonStyle(PlainButtonStyle())
+                .alert(isPresented: self.$data.warnUpperRange, content: {
+                    Alert(title: Text("“Let Me Guess” only supports numbers lower than \(1024.formatted())"), primaryButton: .cancel(Text("OK"), action: {
+                        self.data.resetUpperRange(self.pendingUpperRange, shouldStore: true)
+                        self.data.isEditingUpperRange = false
+                    }), secondaryButton: .cancel())
+                })
                 
                 Button(action: {
                     if !(self.pendingUpperRange >= 100000000 || self.pendingUpperRange == 0) {
                         self.pendingUpperRange *= 10
+                    }
+                    if self.pendingUpperRange >= 100000000 {
+                        WKInterfaceDevice.current().play(.click)
                     }
                 }, label: {
                     Text("\(0.formatted())")
@@ -500,7 +612,7 @@ struct UpperRangeKeyboard: View {
                         .fontWeight(.medium)
                         .scaleEffect(0.69)
                         .opacity(self.pendingUpperRange >= 100000000 || self.pendingUpperRange == 0 ? 0.5 : 1)
-                        .frame(width: (self.geo.size.width - 6) / 3, height: (self.geo.size.height - 12) / 5)
+                        .frame(width: (self.geoProxy.size.width - 6) / 3, height: (self.geoProxy.size.height - 12) / 5)
                         .background(Color(red: 34.0 / 255.0, green: 34.0 / 255.0, blue: 35.0 / 255.0))
                         .cornerRadius(5)
                 }).buttonStyle(PlainButtonStyle())
@@ -515,21 +627,23 @@ struct UpperRangeKeyboard: View {
                         .font(.title)
                         .scaleEffect(0.53)
                         .foregroundColor(.red)
-                        .frame(width: (self.geo.size.width - 6) / 3, height: (self.geo.size.height - 12) / 5)
+                        .frame(width: (self.geoProxy.size.width - 6) / 3, height: (self.geoProxy.size.height - 12) / 5)
                         .background(Color.black)
                 })
-                    .disabled(self.pendingUpperRange == 0)
-                    .buttonStyle(PlainButtonStyle())
-                    .simultaneousGesture(LongPressGesture(minimumDuration: 0.4).onEnded({ _ in
-                        if self.pendingUpperRange != 0 {
-                            self.pendingUpperRange = 0
-                            WKInterfaceDevice.current().play(.click)
-                        }
-                    }))
+                .disabled(self.pendingUpperRange == 0)
+                .buttonStyle(PlainButtonStyle())
+                .simultaneousGesture(LongPressGesture(minimumDuration: 0.4).onEnded({ _ in
+                    if self.pendingUpperRange != 0 {
+                        self.pendingUpperRange = 0
+                        WKInterfaceDevice.current().play(.click)
+                    }
+                }))
             }
         }.navigationBarTitle(Text("Upper Range"))
     }
 }
+
+// MARK: - Upper Range Settings View
 
 struct UpperRangeSettingsView: View {
     @EnvironmentObject var data: GuessData
@@ -537,10 +651,12 @@ struct UpperRangeSettingsView: View {
     
     var body: some View {
         GeometryReader { geo in
-            UpperRangeKeyboard(pendingUpperRange: self.$pendingUpperRange, geo: geo)
+            UpperRangeKeyboard(pendingUpperRange: self.$pendingUpperRange, geoProxy: geo).environmentObject(guessData)
         }.edgesIgnoringSafeArea(.bottom)
     }
 }
+
+// MARK: - Content View
 
 struct ContentView: View {
     @EnvironmentObject var data: GuessData
@@ -549,7 +665,7 @@ struct ContentView: View {
         GeometryReader { geo in
             ScrollView {
                 VStack(spacing: 5) {
-                    NavigationLink(destination: UserGuessingView(), isActive: self.$data.isUserGuessing, label: {
+                    NavigationLink(destination: UserGuessingView().environmentObject(guessData), isActive: self.$data.isUserGuessing, label: {
                         HStack {
                             Image(systemName: "person.crop.circle.fill")
                                 .imageScale(.large)
@@ -559,7 +675,7 @@ struct ContentView: View {
                         self.data.resetUserGuessing()
                     })
                     
-                    NavigationLink(destination: AiGuessingView(), isActive: self.$data.isAiGuessing, label: {
+                    NavigationLink(destination: AiGuessingView().environmentObject(guessData), isActive: self.$data.isAiGuessing, label: {
                         HStack {
                             Image(systemName: "gamecontroller.fill")
                                 .imageScale(.large)
@@ -569,7 +685,7 @@ struct ContentView: View {
                         self.data.resetAiGuessing()
                     })
                     
-                    NavigationLink(destination: RandomizerView(), isActive: self.$data.isInRandomizer, label: {
+                    NavigationLink(destination: RandomizerView().environmentObject(guessData), isActive: self.$data.isInRandomizer, label: {
                         HStack {
                             Image(systemName: "dial.fill")
                                 .imageScale(.large)
@@ -577,7 +693,7 @@ struct ContentView: View {
                         }
                     })
                     
-                    NavigationLink(destination: SettingsView(), isActive: self.$data.isInSettings, label: {
+                    NavigationLink(destination: SettingsView().environmentObject(guessData), isActive: self.$data.isInSettings, label: {
                         HStack {
                             Image(systemName: "gear")
                                 .imageScale(.large)
@@ -587,6 +703,11 @@ struct ContentView: View {
                 }
                 .frame(minHeight: geo.size.height)
                 .navigationBarTitle(Text("Guess"))
+                .alert(isPresented: self.$data.warnMultiComplication) {
+                    Alert(title: Text("GuessTheNumber now supports multiple complications"), message: Text("Choose you favorites and add them to your watch face!"), dismissButton: .default(Text("OK"), action: {
+//                        self.data.quickAction = .none
+                    }))
+                }
             }
         }
     }

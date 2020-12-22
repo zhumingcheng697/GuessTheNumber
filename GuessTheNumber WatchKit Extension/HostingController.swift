@@ -39,10 +39,13 @@ final class GuessData: ObservableObject {
     @Published var isEditingQuickAction = false
     @Published var isEditingUpperRange = false
     @Published var showCompareResult = false
+    @Published var showAiResult = false
     @Published var hasAiWon = false
     @Published var askWhenUserGuessing = false
     @Published var askWhenAiGuessing = false
     @Published var warnUpperRange = false
+    @Published var warnMultiComplication = false
+    @Published var promptMultiComplication = false
     
     enum QuickAction: String, CaseIterable {
         case none = "None"
@@ -88,9 +91,10 @@ final class GuessData: ObservableObject {
         self.isInSettings = false
         if resetAlerts {
             self.showCompareResult = false
-            self.hasAiWon = false
+            self.showAiResult = false
         }
         self.warnUpperRange = false
+        self.promptMultiComplication = false
     }
     
     func storeUserGuessingStatus() {
@@ -108,6 +112,7 @@ final class GuessData: ObservableObject {
         UserDefaults.standard.set(self.aiGuessingUpperLimit, forKey: "aiGuessingUpperLimit")
         UserDefaults.standard.set(self.aiGuessedNumber, forKey: "aiGuessedNumber")
         UserDefaults.standard.set(self.aiGuessedTimes, forKey: "aiGuessedTimes")
+        UserDefaults.standard.set(self.showAiResult, forKey: "showAiResult")
         UserDefaults.standard.set(self.hasAiWon, forKey: "hasAiWon")
     }
     
@@ -138,9 +143,10 @@ final class GuessData: ObservableObject {
         self.aiGuessingUpperLimit = UserDefaults.standard.integer(forKey: "aiGuessingUpperLimit")
         self.aiGuessedNumber = UserDefaults.standard.integer(forKey: "aiGuessedNumber")
         self.aiGuessedTimes = UserDefaults.standard.integer(forKey: "aiGuessedTimes")
+        self.showAiResult = UserDefaults.standard.bool(forKey: "showAiResult")
         self.hasAiWon = UserDefaults.standard.bool(forKey: "hasAiWon")
         self.launchAiGuessing(reset: false)
-        for key in ["shouldRestoreAiGamingStatus", "aiGuessingLowerLimit", "aiGuessingUpperLimit", "aiGuessedNumber", "aiGuessedTimes", "hasAiWon"] {
+        for key in ["shouldRestoreAiGamingStatus", "aiGuessingLowerLimit", "aiGuessingUpperLimit", "aiGuessedNumber", "aiGuessedTimes", "showAiResult", "hasAiWon"] {
             UserDefaults.standard.removeObject(forKey: key)
         }
         
@@ -219,7 +225,15 @@ final class GuessData: ObservableObject {
     
     func autoRedirect(reset: Bool = true) {
         if WKExtension.shared().applicationState == .active {
-            switch self.quickAction {
+            var action: QuickAction
+            
+            if #available(watchOSApplicationExtension 7.0, *) {
+                action = currentAction ?? .none
+            } else {
+                action = self.quickAction
+            }
+            
+            switch action {
                 case .letMeGuess:
                     self.launchUserGuessing(reset: reset)
                 case .letAiGuess:
@@ -235,6 +249,8 @@ final class GuessData: ObservableObject {
                 default:
                     break
             }
+            
+            currentAction = nil
         } else {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
                 self.autoRedirect()

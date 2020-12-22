@@ -9,6 +9,9 @@
 import WatchKit
 import Intents
 import Foundation
+import ClockKit
+
+var currentAction: GuessData.QuickAction? = nil
 
 class ExtensionDelegate: NSObject, WKExtensionDelegate {
     var shouldPlaySfx = false
@@ -35,16 +38,34 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
     }
     
     func handleUserActivity(_ userInfo: [AnyHashable : Any]?) {
-        if guessData.quickAction != .none {
-            if guessData.tryRestoreUserGuessingStatus() {
-                guessData.showCompareResult = true
-                guessData.askWhenUserGuessing = true
-                shouldPlaySfx = true
-            } else if guessData.tryRestoreAiGuessingStatus() {
-                guessData.askWhenAiGuessing = true
-                shouldPlaySfx = true
-            } else {
-                guessData.autoRedirect()
+        if #available(watchOSApplicationExtension 7.0, *) {
+            if let identifierKey = userInfo?[CLKLaunchedComplicationIdentifierKey] as? String, let action = GuessData.QuickAction.init(rawValue: identifierKey), action != .none {
+                currentAction = action
+                if guessData.tryRestoreUserGuessingStatus() {
+                    guessData.showCompareResult = true
+                    guessData.askWhenUserGuessing = true
+                    shouldPlaySfx = true
+                } else if guessData.tryRestoreAiGuessingStatus() {
+                    guessData.showAiResult = true
+                    guessData.askWhenAiGuessing = true
+                    shouldPlaySfx = true
+                } else {
+                    guessData.autoRedirect()
+                }
+            }
+        } else {
+            if guessData.quickAction != .none {
+                if guessData.tryRestoreUserGuessingStatus() {
+                    guessData.showCompareResult = true
+                    guessData.askWhenUserGuessing = true
+                    shouldPlaySfx = true
+                } else if guessData.tryRestoreAiGuessingStatus() {
+                    guessData.showAiResult = true
+                    guessData.askWhenAiGuessing = true
+                    shouldPlaySfx = true
+                } else {
+                    guessData.autoRedirect()
+                }
             }
         }
     }
@@ -59,6 +80,11 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
         }
         
         guessData.usingHex = UserDefaults.standard.bool(forKey: "userPrefersUsingHex")
+        
+        if #available(watchOSApplicationExtension 7.0, *), guessData.quickAction != .none {
+            guessData.warnMultiComplication = true
+            shouldPlaySfx = true
+        }
     }
 
     func applicationDidBecomeActive() {
@@ -73,7 +99,7 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
         guessData.tryRestoreUserGuessingStatus()
         guessData.tryRestoreAiGuessingStatus()
         
-        if shouldPlaySfx && (guessData.showCompareResult && guessData.askWhenUserGuessing && !guessData.userGotCorrectNumber || guessData.askWhenAiGuessing && !guessData.hasAiWon) {
+        if shouldPlaySfx && (guessData.showCompareResult && guessData.askWhenUserGuessing && !guessData.userGotCorrectNumber || guessData.showAiResult && guessData.askWhenAiGuessing && !guessData.hasAiWon || guessData.warnMultiComplication) {
             WKInterfaceDevice.current().play(.retry)
         }
         
@@ -142,6 +168,8 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
         INRelevantShortcutStore.default.setRelevantShortcuts([relevantShortcut], completionHandler: { error in
             UserDefaults.standard.set(error == nil, forKey: "relevantShortcutAdded")
         })
+        
+        currentAction = nil
     }
 
     func handle(_ backgroundTasks: Set<WKRefreshBackgroundTask>) {
